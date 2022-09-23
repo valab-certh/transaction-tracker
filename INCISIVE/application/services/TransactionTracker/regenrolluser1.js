@@ -8,6 +8,7 @@ const { registerAndEnrollUser } = require('../../App Utils/CAUtil.js');
 const insertlog = require('../../MongoDB/controllers/insertlog');
 
 const {ccps, msps, caClients, cas} = require('../../helpers/initalization');
+const { IdentityService } = require('fabric-ca-client');
 
 const walletPath = path.join(__dirname, '..', '..', 'wallet');
 const channelName = process.env.CHANNEL_NAME;
@@ -23,7 +24,6 @@ const regenrolluser1 = async (req, res, next) => {
     // admin accepts and register the user
     const admin = req.body.admin;
     const user = req.body.user;
-    //get org from request or some kind of token
     let org = req.body.org;
     let role = req.body.role;
 
@@ -55,19 +55,23 @@ const regenrolluser1 = async (req, res, next) => {
         const wallet = await Wallets.newFileSystemWallet(path.join(walletPath, 'incisive'));
 
 
+        //  TODO: find another way of checking if user has been enrolled (and not by checking the wallet)
+        // const identityservice = caClient.newIdentityService();
+        // const useridentity = identityservice.getOne(user, {enrollmentID: admin});
+
+
+
         const useridentity = await wallet.get(user);
+
+        console.log(useridentity)
         if (useridentity) {
 
-            msg = `An identity for the user ${user} already exists in the wallet`;
+            msg = `User ${user} has already registered.`;
 			console.log(msg);
             res.send(msg);
 			return ;
 		}
         else {
-
-            [success, X509Identity] = await registerAndEnrollUser(caClient, wallet, msp, user, org, role, admin);
-
-            if(success){
 
                 const gateway = new Gateway();
 
@@ -86,7 +90,9 @@ const regenrolluser1 = async (req, res, next) => {
                 // Get the contract from the network.
                 const contract = network.getContract(chaincodeName, 'UserContract');
             
-                    
+                
+                await registerAndEnrollUser(caClient, wallet, msp, user, org, role, admin);
+
                 //call smart contract
                 console.log('\n--> Submit Transaction: createData, function creates the initial set of assets on the ledger');
                 let result = await contract.submitTransaction('RegisterUser', user, role, org, admin, secret);
@@ -95,7 +101,7 @@ const regenrolluser1 = async (req, res, next) => {
                 let resultjson = JSON.parse(result.toString());
                 console.log(`*** Result: ${prettyJSONString(result.toString())}`);
 
-                await wallet.put(user, X509Identity);
+                // await wallet.put(user, X509Identity);
 
                 gateway.disconnect();
 
@@ -107,16 +113,8 @@ const regenrolluser1 = async (req, res, next) => {
                 await insertlog(hash, action);
                 
 
-
-                res.status(200).send(`Successfully registered and enrolled user ${user}!!!`);
-            }
-
-            else{
-
-                res.status(403).send('User registration failed...')
-                return;
-
-            }
+                console.log(`Successfully registered and enrolled user ${user} and written log to ledger!!!`)
+                res.status(200).send(`OK!`);
         }
 
 
@@ -126,7 +124,7 @@ const regenrolluser1 = async (req, res, next) => {
 
         console.log('User registration failed with error: '+error);
 
-        res.status(403).send('User registration failed...')
+        res.status(403).send('User registration failed with error: '+error)
     }
 
 

@@ -107,9 +107,106 @@ exports.registerEnrollAdmin = async (caClient, wallet, orgMspId, userId, org, ro
 }
 
 
+// exports.registerAndEnrollUser = async (caClient, wallet, orgMspId, userId, org, role, adminUserId) => {
+
+// 	let success;
+
+// 	try {
+
+// 		// Must use an admin to register a new user
+// 		const adminIdentity = await wallet.get(adminUserId);
+// 		if (!adminIdentity) {
+// 			console.log('An identity for the platform admin user does not exist in the wallet');
+// 			console.log('Enroll the platform admin user before retrying');
+// 			return ('An identity for the platform admin user does not exist in the wallet');
+// 		}
+
+
+// 		// build a user object for authenticating with the CA
+// 		const provider = wallet.getProviderRegistry().getProvider(adminIdentity.type);
+// 		const adminUser = await provider.getUserContext(adminIdentity, adminUserId);
+
+
+// 		// Register the user, enroll the user, and import the new identity into the wallet.
+// 		// if affiliation is specified by client, the affiliation value must be configured in CA
+// 		let secret;
+
+// 		if (role == 'ADMINISTRATOR'){		
+			
+// 			secret = await caClient.register({
+
+// 			enrollmentID: userId,
+// 			role: 'client',
+// 			attrs:[{name:'org', value:'INCISIVE', ecert:true}, {name:'hf.Registrar.Roles', value:'client', ecert:true},
+// 			{name:'hf.Revoker', value:'true', ecert:true},{name:'role', value:'ADMINISTRATOR', ecert:true}, {name:'hf.Registrar.Attributes', value:'hf.Registrar.Roles, hf.Revoker, hf.Registrar.Attributes, org, role',ecert:true}]
+// 		}, adminUser);
+// 	}
+
+// 	else if (role == 'ORGANIZATION_ADMINISTRATOR'){
+
+// 		secret = await caClient.register({
+
+// 			enrollmentID: userId,
+// 			role: 'client',
+// 			attrs:[{name:'org', value:org, ecert:true}, {name:'hf.Registrar.Roles', value:'client', ecert:true},
+// 			{name:'hf.Revoker', value:'true', ecert:true},{name:'role', value:'ORGANIZATION_ADMINISTRATOR', ecert:true}, {name:'hf.Registrar.Attributes', value:'hf.Registrar.Roles, hf.Revoker, hf.Registrar.Attributes, org, role',ecert:true}]
+// 		}, adminUser);
+
+// 	}
+
+// 	else {
+
+// 		secret = await caClient.register({
+			
+// 			enrollmentID: userId,
+// 			role: 'client',
+// 			attrs:[{name:'org', value:org, ecert:true},{name:'role', value:role, ecert:true}]
+// 		}, adminUser);
+// 	}
+
+
+// 		console.log("The secret is", secret)
+
+// 		const enrollment = await caClient.enroll({
+// 			enrollmentID: userId,
+// 			enrollmentSecret: secret
+// 		});
+
+// 		const x509Identity = {
+// 			credentials: {
+// 				certificate: enrollment.certificate,
+// 				privateKey: enrollment.key.toBytes(),
+// 			},
+// 			mspId: orgMspId,
+// 			type: 'X.509',
+// 		};
+
+// 		// console.log("Certificate is ",enrollment.certificate)
+
+// 		// await wallet.put(userId, x509Identity);
+
+
+// 		console.log(`Successfully registered and enrolled user ${userId} and imported it into the wallet`);
+// 		success = true;
+// 		// const idservice = caClient.newIdentityService();
+
+// 		// const retrieveIdentity = await idservice.getOne(userId, adminUser);
+// 		// console.log('userattributes', retrieveIdentity.result.attrs);
+// 		return [success, x509Identity];
+// 		//return (`Successfully registered and enrolled user ${userId} `);
+// 	}
+// 	catch (error) {
+
+// 		console.error(`Failed to register user : ${error}`);
+// 		success = false;
+// 		return [success, null];
+// 		//return (`Failed to register user ${userId}...`);
+// 	}
+// };
+
+
 exports.registerAndEnrollUser = async (caClient, wallet, orgMspId, userId, org, role, adminUserId) => {
 
-	let success;
 
 	try {
 
@@ -183,24 +280,17 @@ exports.registerAndEnrollUser = async (caClient, wallet, orgMspId, userId, org, 
 
 		// console.log("Certificate is ",enrollment.certificate)
 
-		// await wallet.put(userId, x509Identity);
+		await wallet.put(userId, x509Identity);
 
 
 		console.log(`Successfully registered and enrolled user ${userId} and imported it into the wallet`);
-		success = true;
-		// const idservice = caClient.newIdentityService();
 
-		// const retrieveIdentity = await idservice.getOne(userId, adminUser);
-		// console.log('userattributes', retrieveIdentity.result.attrs);
-		return [success, x509Identity];
-		//return (`Successfully registered and enrolled user ${userId} `);
 	}
 	catch (error) {
 
 		console.error(`Failed to register user : ${error}`);
-		success = false;
-		return [success, null];
-		//return (`Failed to register user ${userId}...`);
+		throw new Error(`Failed to register user ${userId}`);
+
 	}
 };
 
@@ -209,7 +299,7 @@ exports.revoke = async(userid, wallet, caClient, channelName) => {
 
 	// try{		
 		const user = await wallet.get(userid);
-		const org = 'extr';
+		const org = 'incisive';
 
 		// maybe this check is unnecessary.....
 		if (user) {

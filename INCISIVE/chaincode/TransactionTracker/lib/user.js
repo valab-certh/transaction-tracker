@@ -33,7 +33,6 @@ class UserContract extends Contract {
 
         const newaction = {
 
-            DocType: "Action",
             ID: id,
             User:user,
             Org: org,
@@ -68,7 +67,6 @@ class UserContract extends Contract {
 
         const newaction = {
 
-            DocType: "Action",
             ID: id,
             Actor:actor,
             Org: org,
@@ -119,7 +117,7 @@ class UserContract extends Contract {
 
         const sha256 = crypto.createHmac("sha256", secret);
         let hashlog = sha256.update(stringdata).digest('base64');
-        ctx.stub.putState(id, Buffer.from(stringify(hashlog)));
+        ctx.stub.putState(hashlog, Buffer.from(stringify(hashlog)));
         return JSON.stringify([newaction, hashlog.toString()]);
 
     }
@@ -158,8 +156,15 @@ class UserContract extends Contract {
         ctx.stub.putState(id, Buffer.from(stringify(hashlog)));
         return JSON.stringify([newaction, hashlog.toString()]);
 
+
     }
 
+
+
+    async LogExists(ctx, hash) {
+        const logJSON = await ctx.stub.getState(hash);
+        return logJSON && logJSON.length > 0;
+      }
 
 
     

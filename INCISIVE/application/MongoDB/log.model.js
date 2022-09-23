@@ -12,10 +12,36 @@ var logSchema = mongoose.Schema({
         unique: false
     },
 
-    log: {
+    User: {
+        type:Object,
+        required: true
+    },
+
+    Timestamp: {
+        type:Object,
+        required: true
+    },
+
+    Org: {
+        type:Object,
+        required: true
+    },
+
+    Role: {
+        type:Object,
+        required: true
+    },
+
+    Action: {
+        type:Object,
+        required: true
+    },
+
+    Data: {
         type:Object,
         required: true
     }
+
 })
 
 log = mongoose.model('Log', logSchema)

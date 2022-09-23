@@ -93,9 +93,9 @@ const logout = async(req, res, next) => {
 
     catch(error) {
 
-        console.log('New critical action (log out) submition failed with error: '+error);
+        console.log('Logout submition failed with error: '+error);
 
-        res.status(403).send('New critical action (log out) submition failed ...')
+        res.status(403).send('Logout submition failed with error: '+error)
         
 
     }

@@ -95,7 +95,7 @@ const login = async(req, res, next) => {
 
         console.log('Login submition failed with error: '+error);
 
-        res.status(403).send('Login submition failed ...')
+        res.status(403).send('Login submition failed with error: '+error)
         
 
     }
