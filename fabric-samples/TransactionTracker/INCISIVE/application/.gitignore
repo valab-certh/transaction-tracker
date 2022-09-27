@@ -1,0 +1,15 @@
+#
+# Ignore App related files
+#
+
+# Enviromental variables
+.env
+
+#Node modules
+node_modules
+
+#
+
+package-lock.json
+
+wallet
