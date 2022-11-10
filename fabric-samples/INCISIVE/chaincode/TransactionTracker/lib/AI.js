@@ -22,8 +22,6 @@ class AIContract extends Contract {
     async TrainModel(ctx, actor, modelname, data, secret) {
 
         let id = ctx.stub.getTxID();
-        // let timestamp = ctx.stub.getTxTimestamp();
-        // let timestamp = new Date(ctx.stub.getTxTimestamp().seconds.low*1000).toISOString();
         let timestamp = ctx.stub.getDateTimestamp();
         let role = ctx.clientIdentity.getAttributeValue('role');
         let org = ctx.clientIdentity.getAttributeValue('org');
@@ -31,15 +29,15 @@ class AIContract extends Contract {
 
         const newaction = {
 
-            DocType: "Action",
             ID: id,
-            Actor:actor,
-            Org:org,
+            User:actor,
+            Organisation:org,
             Role: role,
-            Timestamp: timestamp,
+            Date: timestamp.toDateString(),
+            Time: timestamp.toTimeString(),
             Action: 'Train Model',
-            ModelName: modelname,
-            Data: data
+            Data: data,
+            ModelName: modelname
 
         }
 
@@ -55,26 +53,25 @@ class AIContract extends Contract {
     }
 
     // a new critical action regarding data will be recorded on the blockchain and saved to world state
-    async AIService(ctx, action, data, actor, secret) {
+    async AIService(ctx, service, data, actor, secret) {
 
         let id = ctx.stub.getTxID();
         let role = ctx.clientIdentity.getAttributeValue('role');
         let org = ctx.clientIdentity.getAttributeValue('org');
-        // let timestamp = ctx.stub.getTxTimestamp();
-        // let timestamp = new Date(ctx.stub.getTxTimestamp().seconds.low*1000).toISOString();
         let timestamp = ctx.stub.getDateTimestamp();
         
 
         const newaction = {
 
-            DocType: "Action",
             ID: id,
-            Actor:actor,
-            Org:org,
+            User:actor,
+            Organisation:org,
             Role: role,
-            Timestamp: timestamp,
-            Action: action,
-            Data: data
+            Date: timestamp.toDateString(),
+            Time: timestamp.toTimeString(),
+            Action: "Use AI service",
+            Data: data,
+            AIservice:service
 
         }
 

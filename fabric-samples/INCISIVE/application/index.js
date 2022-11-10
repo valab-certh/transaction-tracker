@@ -26,6 +26,14 @@ const annotateAI = require('./services/TransactionTracker/annotateAI');
 const qualitycheck = require('./services/TransactionTracker/qualitycheck');
 const AIservice = require('./services/TransactionTracker/AIservice');
 const uploaddata = require('./services/TransactionTracker/uploaddata');
+const viewData = require('./services/TransactionTracker/viewData');
+
+
+const getdata = require('./services/TransactionTracker/getdata');
+
+const getLogsByUser = require('./services/TransactionTracker/getLogsByUser');
+const getLogsByUserOrg = require('./services/TransactionTracker/getLogsByUserOrg');
+const getLogsByData = require('./services/TransactionTracker/getLogsByData');
 
 
 const {keyverification} = require('./services/verifykey/keyverification');
@@ -47,10 +55,10 @@ regadmin1();
 app.use(cors(corsOptions));
 
 //use API key verification as middleware
-app.use(keyverification);
+// app.use(keyverification);
 
 //endpoint for registartion of a user
-app.post('/tracker/signup', regenrolluser1);
+app.post('/tracker/register', regenrolluser1);
 
 app.post('/tracker/removeuser', revokeuser);
 
@@ -74,9 +82,19 @@ app.post('/tracker/annotateai', annotateAI);
 
 app.post('/tracker/qualitycheck', qualitycheck);
 
+app.post('/tracker/viewdata', viewData)
+
 app.post('/tracker/aiservice', AIservice);
 
 app.post('/tracker/trainmodel', trainmodel);
+
+app.get('/tracker/getlogsbyuser', getLogsByUser);
+
+app.get('/tracker/getlogsbyuserorg', getLogsByUserOrg);
+
+app.get('/tracker/getlogsbydata', getLogsByData);
+
+app.post('/tracker/getdata', getdata);
 
 
 

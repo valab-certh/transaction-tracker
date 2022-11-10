@@ -14,91 +14,106 @@ class DatasetsContract extends Contract {
         super('DatasetsContract');
     }
 
-
-    async StoreData(ctx, actor, data_id, rights){
+    // StoreData is used to store metadata about the medical dataon the ledger, either it is about new data or add data to existing data.
+    // TODO: Add check if user is a data provider and can upload data
+    async StoreData(ctx, data_id, user, dataType){
 
         let org = ctx.clientIdentity.getAttributeValue('org');
-        let date = ctx.stub.getDateTimestamp();
+        let timestamp = ctx.stub.getDateTimestamp();
 
-        let newdata = {};
-        let granted;
+        const exists = await this.DataExists(ctx, data_id);
+        if (!exists) {
 
-        // let queryString = {};
-		// queryString.selector = {};
-		// queryString.selector.DocType = 'Dataset';
-		// queryString.selector.ID = data_id;
-		// let datasetAsBytes = await ctx.stub.getQueryResult(JSON.stringify(queryString));
+           let data = {
 
+                ID: data_id,
+                Uploader: user,
+                DataProvider: org,
+                DateShared: timestamp.toDateString(),
+                TimeShared: timestamp.toTimeString(),
+                DateModified: timestamp.toDateString(),
+                TimeModified: timestamp.toTimeString(),
+                Type:dataType   //n represents if data is public or private
 
-        if (ctx.clientIdentity.assertAttributeValue('role', 'hcp')){
-
-            granted = true;
-
-            let datasetAsBytes = await ctx.stub.getState(data_id);
-            if (!datasetAsBytes || !datasetAsBytes.toString()) {
-    
-                newdata = {
-    
-                    DocType: "Dataset",
-                    ID: data_id,
-                    AccessRights: rights,
-                    Uploader: actor,
-                    Org: org,
-                    Date_uploaded: date,
-                    Date_modified: date,
-                    Deleted: false
-        
-                };
-        
-        
-                ctx.stub.putState(data_id, Buffer.from(stringify(newdata)));
-                
-            }
-
+            };
+            await ctx.stub.putState(data_id, Buffer.from(stringify((data))));
+            return JSON.stringify(data);
         }
-
         else {
 
-            granted = false;
-
+            let data = await this.ReadData(ctx, data_id);
+            data = JSON.parse(data);
+            data.DateModified = timestamp.toDateString();
+            data.TimeModified = timestamp.toTimeString();
+            await ctx.stub.putState(data_id, Buffer.from(stringify((data))));
+            return JSON.stringify(data);
         }
-
-        return [JSON.stringify(newdata), granted];
-
-    }
-
-
-    async UpdateData(ctx, identity, data_id){
-
-
-        let queryString = {};
-		queryString.selector = {};
-		queryString.selector.DocType = 'Dataset';
-		queryString.selector.ID = data_id;
-		let datasetAsBytes = await ctx.stub.getQueryResult(JSON.stringify(queryString));
-        let dataset = JSON.parse(datasetAsBytes.toString());
-        let uploader = dataset.Uploader;
-
-        //TODO: Access control on data
         
 
-        //if (ctx.clientIdentity.assertAttributeValue('role', 'hcp'));
+    }
 
 
-        if (datasetAsBytes && datasetAsBytes.toString()){
+    // RemoveData is used when a data provider removes some of the data with data_id.
+    // TODO: check if user is eligible to perform this action
+    async RemoveData(ctx, data_id, user) {
 
-            if ( uploader == identity) {
+        let timestamp = ctx.stub.getDateTimestamp();
 
-                dataset.Date_modified = tx.stub.getDateTimestamp();
+        const exists = this.DataExists(ctx, data_id);
+        if (!exists) {
 
-                ctx.stub.putState(data_id, Buffer.from(stringify(dataset)));
-            }
+            throw new Error(`You can't remove data that does not exist.`);
+        }
+
+        let currentData = await this.ReadData(ctx, data_id);
+        currentData.DateModified = timestamp.toDateString();
+        currentData.TimeModified = timestamp.toTimeString();
+
+
+        await ctx.stub.putState(data_id, Buffer.from(stringify(sortKeysRecursive(currentData))));
+        return currentData;
+
+    }
+
+
+    // DeleteData is used when data is permanently deleted from the repository
+    // TODO: check if user is elegible to perform this action
+    async DeleteData(ctx, data_id, user){
+
+        const exists = this.DataExists(ctx, data_id);
+        if (!exists) {
+
+            throw new Error(`You can't delete data that does not exist.`);
         }
 
 
-        return JSON.stringify(newdata);
+        let currentData = await this.ReadData(ctx, data_id);
+
+        await ctx.stub.DeleteData(data_id);
+
+        return currentData;
 
     }
+
+
+
+  // ReadData returns the data stored in the world state with given id.
+  async ReadData(ctx, data_id) {
+    const dataJSON = await ctx.stub.getState(data_id); // get the data from chaincode state
+    if (!dataJSON || dataJSON.length === 0) {
+      throw new Error(`The data with id ${data_id} does not exist`);
+    }
+
+    return dataJSON.toString();
+}
+
+
+
+    // DataExists returns true when data with the given ID exists in world state.
+    async DataExists(ctx, data_id) {
+        const dataJSON = await ctx.stub.getState(data_id);
+        return dataJSON && dataJSON.length > 0;
+  }
 
 }
 

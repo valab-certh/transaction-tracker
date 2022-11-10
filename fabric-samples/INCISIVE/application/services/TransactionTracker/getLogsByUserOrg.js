@@ -8,7 +8,7 @@ const walletPath = path.join(__dirname, '..', '..', 'wallet');
 
 // const makeccp = require('../helpers/makeccp');
 const {ccps, msps, caClients, cas} = require('../../helpers/initalization');
-const retrieveByUser= require('../../MongoDB/controllers/retrieveByUser');
+const retrieveByUserOrg= require('../../MongoDB/controllers/retrieveByUserOrg');
 
 function prettyJSONString(inputString) {
 	return JSON.stringify(JSON.parse(inputString), null, 2);
@@ -17,7 +17,7 @@ function prettyJSONString(inputString) {
 
 
 // TODO: check if user is admin (probably), and see about the middleware
-const getLogsByUser = async(req, res, next) => {
+const getLogsByUserOrg = async(req, res, next) => {
 
     const identity = req.body.user;
     const requestor = req.body.requestor;
@@ -36,9 +36,6 @@ const getLogsByUser = async(req, res, next) => {
         // if user exists, check if user is an admin and hence can check the logs
         if (requestoridentity) {
             console.log('OK! Registered user!!!');
-
-
-
         }
         else{
 
@@ -49,21 +46,25 @@ const getLogsByUser = async(req, res, next) => {
 
         //check if the identity eixsts
         // TODO: check if this is really needed
-        const exists = await wallet.get(identity);
-        if (exists) {
-            console.log('OK! Registered user!!!');
-        }
-        else{
 
-            console.log('User identity does not exist in wallet.... Not registered user');
-            throw new Error('User identity does not exist in wallet.... Not registered user')
-        }
+        if (identity){
 
+            const exists = await wallet.get(identity);
+            if (exists) {
+                console.log('OK! Registered user!!!');
+            }
+            else{
+    
+                console.log('The user you requested does not exist.... Not registered user');
+                throw new Error('The user you requested does not exist')
+            }
+        }
 
 
         const gateway = new Gateway();
+
+
         console.log("Trying to connect to gateway...")
-        
         await gateway.connect(ccp, {
             wallet,
             identity: requestoridentity,
@@ -77,21 +78,28 @@ const getLogsByUser = async(req, res, next) => {
         // Get the contract from the network.
         const contract = network.getContract(chaincodeName, 'UserContract');
 
-        let isAdmin = await contract.evaluateTransaction('CheckRole', "ADMINISTRATOR");
-
-
-        if (!(isAdmin == 'true')){
-
-            throw new Error("You don't have the necessary right to perform this action");
+       try{
+        
+            await contract.evaluateTransaction('CheckRole', "ORGANIZATION_ADMINISTRATOR");
         }
+        catch(err){
+
+            throw new Error(err)
+        }
+
+
+
+        let org = await contract.evaluateTransaction('GetOrg');
+        let orgJSON = JSON.parse(org);
+        console.log(orgJSON)
 
         gateway.disconnect();
 
 
 
-        let logs = await retrieveByUser(req.body.user);
+        let logs = await retrieveByUserOrg(req.body.user, orgJSON);
         console.log(logs.toString())
-        let logsjson =JSON.parse(JSON.stringify(logs));
+        let logsjson = JSON.parse(JSON.stringify(logs));
         console.log(logsjson)
         res.status(200).send(logsjson);
         
@@ -108,4 +116,4 @@ const getLogsByUser = async(req, res, next) => {
     }
     
 }
-module.exports = getLogsByUser;
+module.exports = getLogsByUserOrg;

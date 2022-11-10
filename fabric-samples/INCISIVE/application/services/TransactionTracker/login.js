@@ -24,6 +24,7 @@ const login = async(req, res, next) => {
 
     //should be given by request or taken from a token (e.g. jwt)
     const identity = req.body.user;
+    console.log(identity)
 
     try {
 
@@ -81,7 +82,7 @@ const login = async(req, res, next) => {
 
             //save log to mongodb
             let action = resultjson[0];
-            console.log('acyion', action)
+            console.log('action', action)
             let hash = resultjson[1];
             console.log('hash', hash)
             await insertlog(hash, action);
@@ -95,7 +96,7 @@ const login = async(req, res, next) => {
 
         console.log('Login submition failed with error: '+error);
 
-        res.status(403).send('Login submition failed ...')
+        res.status(403).send('Login submition failed with error: '+error)
         
 
     }

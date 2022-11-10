@@ -2,13 +2,14 @@ const { Gateway, Wallets} = require('fabric-network');
 const path = require('path');
 const fs = require('fs');
 
-const {ccps, msps, caClients, cas} = require('../../helpers/initalization');
-const insertlog = require('../../MongoDB/controllers/insertlog');
-
 const channelName = process.env.CHANNEL_NAME;
 const chaincodeName = process.env.CC_NAME;
 const secret = process.env.HASH_SECRET;
-const walletPath = path.join(__dirname, '..','..', 'wallet');
+const walletPath = path.join(__dirname, '..', '..', 'wallet');
+
+
+const {ccps, msps, caClients, cas} = require('../../helpers/initalization');
+const insertlog = require('../../MongoDB/controllers/insertlog');
 
 
 function prettyJSONString(inputString) {
@@ -16,20 +17,17 @@ function prettyJSONString(inputString) {
 }
 
 
-// all the results that were returned with a specific query
-const returneddata = async (req, res) => {
+const viewData= async(req, res, next) => {
 
     //should be given by request or taken from a token (e.g. jwt)
     const identity = req.body.user;
     let data = req.body.data;
     console.log(req.body)
-    data = JSON.stringify(data);
-    //console.log(JSON.stringify(data))
+
 
     let ccp ;
 
     try {
-
 
         ccp = ccps['incisive'];
 
@@ -77,11 +75,9 @@ const returneddata = async (req, res) => {
             //let timestamp = Date.now();
 
             console.log('\n--> Submit Transaction: InitLedger, function creates the initial set of assets on the ledger');
-            let result = await contract.submitTransaction('ReturnedData', data, identity, secret);
+            let result = await contract.submitTransaction('ViewData', data, identity, secret);
 
             console.log('*** Result: committed');
-
-
             let resultjson = JSON.parse(result.toString());
             console.log(`*** Result: ${prettyJSONString(result.toString())}`);
             // console.log("The result is:", action)
@@ -106,13 +102,12 @@ const returneddata = async (req, res) => {
 
     catch(error) {
 
-        console.log('New critical action (access data) submition failed with error: '+error);
+        console.log('View data log submission failed with error: '+error);
 
-        res.status(403).send('New critical action (access data) submition failed ...')
+        res.status(403).send('View data log submission failed ...')
         
 
     }
- 
+    
 }
-
-module.exports = returneddata;
+module.exports = viewData;

@@ -4,7 +4,7 @@
 const adminUserId = 'admin';
 
 //define the INCISIVE Platfrom admin(s) credentials
-const INCISIVEadminId = 'Administrator';
+const INCISIVEadminId = 'admin@incisive-project.eu';
 const INCISIVEadminPasswd = '!ncisive';
 
 const { Gateway, Wallets } = require('fabric-network');

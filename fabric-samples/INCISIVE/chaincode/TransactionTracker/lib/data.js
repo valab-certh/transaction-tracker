@@ -5,6 +5,7 @@
 // Deterministic JSON.stringify()
 const stringify  = require('json-stringify-deterministic');
 const { Contract } = require('fabric-contract-api');
+const Datasets = require('./datasets');
 const crypto = require('crypto');
 
 class DataContract extends Contract {
@@ -29,16 +30,23 @@ class DataContract extends Contract {
 
         const newaction = {
 
-            DocType: "Action",
+
             ID: id,
-            Actor:actor,
-            Org:org,
+            User:actor,
+            Organisation:org,
             Role: role,
-            Timestamp: timestamp,
+            Date: timestamp.toDateString(),
+            Time: timestamp.toTimeString(),
             Action: 'Upload data',
             Data: data_id
 
         }
+
+
+
+
+        let data = await new Datasets().StoreData(ctx, data_id, actor, "Public");
+
 
         let stringdata = JSON.stringify(newaction);
 
@@ -63,12 +71,13 @@ class DataContract extends Contract {
 
         const newaction = {
 
-            DocType: "Action",
+
             ID: id,
-            Actor:actor,
-            Org:org,
+            User:actor,
+            Organisation:org,
             Role: role,
-            Timestamp: timestamp,
+            Date: timestamp.toDateString(),
+            Time: timestamp.toTimeString(),
             Action: 'Update data',
             Data: data
 
@@ -98,12 +107,13 @@ class DataContract extends Contract {
 
         const newaction = {
 
-            DocType: "Action",
+
             ID: id,
-            Actor:actor,
-            Org:org,
+            User:actor,
+            Organisation:org,
             Role: role,
-            Timestamp: timestamp,
+            Date: timestamp.toDateString(),
+            Time: timestamp.toTimeString(),
             Action: 'Delete data',
             Data: data
 
@@ -134,12 +144,13 @@ class DataContract extends Contract {
 
         const newaction = {
 
-            DocType: "Action",
+
             ID: id,
-            Actor:actor,
-            Org:org,
+            User:actor,
+            Organisation:org,
             Role: role,
-            Timestamp: timestamp,
+            Date: timestamp.toDateString(),
+            Time: timestamp.toTimeString(),
             Action: 'Deidentify data',
             Data: data
 
@@ -160,8 +171,6 @@ class DataContract extends Contract {
     async Annotate(ctx, data, actor, secret) {
 
         let id = ctx.stub.getTxID();
-        // let timestamp = ctx.stub.getTxTimestamp();
-        // let timestamp = new Date(ctx.stub.getTxTimestamp().seconds.low*1000).toISOString();
         let timestamp = ctx.stub.getDateTimestamp();
         let role = ctx.clientIdentity.getAttributeValue('role');
         let org = ctx.clientIdentity.getAttributeValue('org');
@@ -169,12 +178,13 @@ class DataContract extends Contract {
 
         const newaction = {
 
-            DocType: "Action",
+
             ID: id,
-            Actor:actor,
-            Org:org,
+            User:actor,
+            Organisation:org,
             Role: role,
-            Timestamp: timestamp,
+            Date: timestamp.toDateString(),
+            Time: timestamp.toTimeString(),
             Action: 'Annotate',
             Data: data
 
@@ -197,8 +207,6 @@ class DataContract extends Contract {
     async AnnotateAI(ctx, data, actor, secret) {
 
         let id = ctx.stub.getTxID();
-        // let timestamp = ctx.stub.getTxTimestamp();
-        // let timestamp = new Date(ctx.stub.getTxTimestamp().seconds.low*1000).toISOString();
         let timestamp = ctx.stub.getDateTimestamp();
         let role = ctx.clientIdentity.getAttributeValue('role');
         let org = ctx.clientIdentity.getAttributeValue('org');
@@ -206,12 +214,13 @@ class DataContract extends Contract {
 
         const newaction = {
 
-            DocType: "Action",
+
             ID: id,
-            Actor:actor,
-            Org:org,
+            User:actor,
+            Organisation:org,
             Role: role,
-            Timestamp: timestamp,
+            Date: timestamp.toDateString(),
+            Time: timestamp.toTimeString(),
             Action: 'Annotate data using AI algorithms',
             Data: data
 
@@ -233,8 +242,6 @@ class DataContract extends Contract {
     async QualityCheck (ctx, data, actor, secret) {
 
         let id = ctx.stub.getTxID();
-        // let timestamp = ctx.stub.getTxTimestamp();
-        // let timestamp = new Date(ctx.stub.getTxTimestamp().seconds.low*1000).toISOString();
         let timestamp = ctx.stub.getDateTimestamp();
         let role = ctx.clientIdentity.getAttributeValue('role');
         let org = ctx.clientIdentity.getAttributeValue('org');
@@ -242,12 +249,13 @@ class DataContract extends Contract {
 
         const newaction = {
 
-            DocType: "Action",
+
             ID: id,
-            Actor:actor,
-            Org:org,
+            User:actor,
+            Organisation:org,
             Role: role,
-            Timestamp: timestamp,
+            Date: timestamp.toDateString(),
+            Time: timestamp.toTimeString(),
             Action: 'Data Quality Check',
             Data: data
 
@@ -270,8 +278,6 @@ class DataContract extends Contract {
     async SearchData(ctx, query, actor, secret) {
 
         let id = ctx.stub.getTxID();
-        // let timestamp = ctx.stub.getTxTimestamp();
-        // let timestamp = new Date(ctx.stub.getTxTimestamp().seconds.low*1000).toISOString();
         let timestamp = ctx.stub.getDateTimestamp();
         let role = ctx.clientIdentity.getAttributeValue('role');
         let org = ctx.clientIdentity.getAttributeValue('org');
@@ -279,14 +285,15 @@ class DataContract extends Contract {
 
         const newaction = {
 
-            DocType: "Action",
+
             ID: id,
-            Actor:actor,
-            Org:org,
+            User:actor,
+            Organisation:org,
             Role: role,
-            Timestamp: timestamp,
+            Date: timestamp.toDateString(),
+            Time: timestamp.toTimeString(),
             Action: 'Search for data',
-            Query: query
+            Query: JSON.parse(query)
 
         }
 
@@ -305,8 +312,6 @@ class DataContract extends Contract {
    async ReturnedData(ctx, data, actor, secret) {
 
     let id = ctx.stub.getTxID();
-    // let timestamp = ctx.stub.getTxTimestamp();
-    // let timestamp = new Date(ctx.stub.getTxTimestamp().seconds.low*1000).toISOString();
     let timestamp = ctx.stub.getDateTimestamp();
     let role = ctx.clientIdentity.getAttributeValue('role');
     let org = ctx.clientIdentity.getAttributeValue('org');
@@ -314,12 +319,13 @@ class DataContract extends Contract {
 
     const newaction = {
 
-        DocType: "Action",
+        
         ID: id,
-        Actor:actor,
-        Org:org,
+        User:actor,
+        Organisation:org,
         Role: role,
-        Timestamp: timestamp,
+        Date: timestamp.toDateString(),
+        Time: timestamp.toTimeString(),
         Action: 'Returned data',
         Data: data
 
@@ -341,8 +347,6 @@ class DataContract extends Contract {
    async ChooseData(ctx, data, actor, secret) {
 
     let id = ctx.stub.getTxID();
-    // let timestamp = ctx.stub.getTxTimestamp();
-    // let timestamp = new Date(ctx.stub.getTxTimestamp().seconds.low*1000).toISOString();
     let timestamp = ctx.stub.getDateTimestamp();
     let role = ctx.clientIdentity.getAttributeValue('role');
     let org = ctx.clientIdentity.getAttributeValue('org');
@@ -350,12 +354,12 @@ class DataContract extends Contract {
 
     const newaction = {
 
-        DocType: "Action",
         ID: id,
-        Actor:actor,
-        Org:org,
+        User:actor,
+        Organisation:org,
         Role: role,
-        Timestamp: timestamp,
+        Date: timestamp.toDateString(),
+        Time: timestamp.toTimeString(),
         Action: 'Choose data',
         Data: data
 
@@ -373,22 +377,43 @@ class DataContract extends Contract {
     }
 
 
-    async AccessControl(ctx, role){
 
-        let granted;
+    // ViewData is the action that creates the log for (pre)viewing some data
+    async ViewData(ctx, data_id, user, secret){
 
-        if (ctx.clientIdentity.assertAttributeValue('role', role)){
 
-            granted = true;
+        let id = ctx.stub.getTxID();
+        // let timestamp = ctx.stub.getTxTimestamp();
+        // let timestamp = new Date(ctx.stub.getTxTimestamp().seconds.low*1000).toISOString();
+        let timestamp = ctx.stub.getDateTimestamp();
+        let role = ctx.clientIdentity.getAttributeValue('role');
+        let org = ctx.clientIdentity.getAttributeValue('org');
+
+        //let granted;
+
+        const newaction = {
+
+
+            ID: id,
+            User:user,
+            Organisation:org,
+            Role: role,
+            Date: timestamp.toDateString(),
+            Time: timestamp.toTimeString(),
+            Action: 'View data',
+            Data: data_id
+
         }
 
-        else {
 
-            granted = false;
-        }
+        let stringdata = JSON.stringify(newaction);
 
-        return granted;
+        const sha256 = crypto.createHmac("sha256", secret);
+        let hashlog = sha256.update(stringdata).digest('base64');
+        ctx.stub.putState(id, Buffer.from(stringify(hashlog)));
+        return JSON.stringify([newaction, hashlog.toString()]);
     }
+
 
 }
 

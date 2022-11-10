@@ -23,8 +23,7 @@ const uploaddata = async (req, res) => {
     const identity = req.body.user;
     let data = req.body.data;
     console.log(req.body)
-    //let datastr = JSON.stringify(data);
-    //console.log(JSON.stringify(data))
+
 
     try {
 
@@ -71,14 +70,16 @@ const uploaddata = async (req, res) => {
 
             // Get the contract from the network.
             const contract = network.getContract(chaincodeName, 'DataContract');
-            //const datasets_contracts = network.getContract(datasetCC);
+            // const datasets_contracts = network.getContract(chaincodeName, 'DatasetsContract');
 
             //let timestamp = Date.now();
-            console.log(data.data_id)
+            // console.log(data.data_id)
 
             console.log('\n--> Submit Transaction: InitLedger, function creates the initial set of assets on the ledger');
-            let result= await contract.submitTransaction('UploadData', data.data_id, identity, secret);
-
+            let result= await contract.submitTransaction('UploadData', data, identity, secret);
+            // let datas = await datasets_contracts.submitTransaction('StoreData', data, identity, "public");
+            // console.log(datas)
+            // console.log(prettyJSONString(datas.toString()));
             console.log('*** Result: committed');
             console.log(`*** Result: ${prettyJSONString(result.toString())}`);
             // console.log(`*** Result: ${action.toString()}`);

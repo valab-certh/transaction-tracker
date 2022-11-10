@@ -23,7 +23,7 @@ const choosedata = async (req, res) => {
     const identity = req.body.user;
     let data = req.body.data;
     console.log(req.body)
-    data = JSON.stringify(data);
+    // data = JSON.stringify(data);
     //console.log(JSON.stringify(data))
 
     let ccp ;
