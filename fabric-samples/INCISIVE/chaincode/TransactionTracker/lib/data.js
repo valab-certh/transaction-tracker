@@ -44,15 +44,23 @@ class DataContract extends Contract {
 
 
 
+        try{
 
-        let data = await new Datasets().StoreData(ctx, data_id, actor, "Public");
+         await new Datasets().StoreData(ctx, data_id, actor, "Public");
+
+        }
+
+        catch(err){
+
+            throw new Error(err)
+        }
 
 
         let stringdata = JSON.stringify(newaction);
 
         const sha256 = crypto.createHmac("sha256", secret);
         let hashlog = sha256.update(stringdata).digest('base64');
-        ctx.stub.putState(id, Buffer.from(stringify(hashlog)));
+        ctx.stub.putState(hashlog, Buffer.from(stringify(hashlog)));
         return JSON.stringify([newaction, hashlog.toString()]);
     }
 
@@ -87,7 +95,7 @@ class DataContract extends Contract {
 
         const sha256 = crypto.createHmac("sha256", secret);
         let hashlog = sha256.update(stringdata).digest('base64');
-        ctx.stub.putState(id, Buffer.from(stringify(hashlog)));
+        ctx.stub.putState(hashlog, Buffer.from(stringify(hashlog)));
         return JSON.stringify([newaction, hashlog.toString()]);
 
     }
@@ -123,7 +131,7 @@ class DataContract extends Contract {
 
         const sha256 = crypto.createHmac("sha256", secret);
         let hashlog = sha256.update(stringdata).digest('base64');
-        ctx.stub.putState(id, Buffer.from(stringify(hashlog)));
+        ctx.stub.putState(hashlog, Buffer.from(stringify(hashlog)));
         return JSON.stringify([newaction, hashlog.toString()]);
 
 
@@ -160,7 +168,7 @@ class DataContract extends Contract {
 
         const sha256 = crypto.createHmac("sha256", secret);
         let hashlog = sha256.update(stringdata).digest('base64');
-        ctx.stub.putState(id, Buffer.from(stringify(hashlog)));
+        ctx.stub.putState(hashlog, Buffer.from(stringify(hashlog)));
         return JSON.stringify([newaction, hashlog.toString()]);
 
     }
@@ -195,7 +203,7 @@ class DataContract extends Contract {
 
         const sha256 = crypto.createHmac("sha256", secret);
         let hashlog = sha256.update(stringdata).digest('base64');
-        ctx.stub.putState(id, Buffer.from(stringify(hashlog)));
+        ctx.stub.putState(hashlog, Buffer.from(stringify(hashlog)));
         return JSON.stringify([newaction, hashlog.toString()]);
 
 
@@ -231,7 +239,7 @@ class DataContract extends Contract {
 
         const sha256 = crypto.createHmac("sha256", secret);
         let hashlog = sha256.update(stringdata).digest('base64');
-        ctx.stub.putState(id, Buffer.from(stringify(hashlog)));
+        ctx.stub.putState(hashlog, Buffer.from(stringify(hashlog)));
         return JSON.stringify([newaction, hashlog.toString()]);
 
 
@@ -266,7 +274,7 @@ class DataContract extends Contract {
 
         const sha256 = crypto.createHmac("sha256", secret);
         let hashlog = sha256.update(stringdata).digest('base64');
-        ctx.stub.putState(id, Buffer.from(stringify(hashlog)));
+        ctx.stub.putState(hashlog, Buffer.from(stringify(hashlog)));
         return JSON.stringify([newaction, hashlog.toString()]);
 
 
@@ -302,7 +310,7 @@ class DataContract extends Contract {
 
         const sha256 = crypto.createHmac("sha256", secret);
         let hashlog = sha256.update(stringdata).digest('base64');
-        ctx.stub.putState(id, Buffer.from(stringify(hashlog)));
+        ctx.stub.putState(hashlog, Buffer.from(stringify(hashlog)));
         return JSON.stringify([newaction, hashlog.toString()]);
 
 
@@ -336,7 +344,7 @@ class DataContract extends Contract {
 
     const sha256 = crypto.createHmac("sha256", secret);
     let hashlog = sha256.update(stringdata).digest('base64');
-    ctx.stub.putState(id, Buffer.from(stringify(hashlog)));
+    ctx.stub.putState(hashlog, Buffer.from(stringify(hashlog)));
     return JSON.stringify([newaction, hashlog.toString()]);
 
 
@@ -370,7 +378,7 @@ class DataContract extends Contract {
 
     const sha256 = crypto.createHmac("sha256", secret);
     let hashlog = sha256.update(stringdata).digest('base64');
-    ctx.stub.putState(id, Buffer.from(stringify(hashlog)));
+    ctx.stub.putState(hashlog, Buffer.from(stringify(hashlog)));
     return JSON.stringify([newaction, hashlog.toString()]);
 
 
@@ -410,7 +418,7 @@ class DataContract extends Contract {
 
         const sha256 = crypto.createHmac("sha256", secret);
         let hashlog = sha256.update(stringdata).digest('base64');
-        ctx.stub.putState(id, Buffer.from(stringify(hashlog)));
+        ctx.stub.putState(hashlog, Buffer.from(stringify(hashlog)));
         return JSON.stringify([newaction, hashlog.toString()]);
     }
 

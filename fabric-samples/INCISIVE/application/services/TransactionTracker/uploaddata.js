@@ -70,31 +70,22 @@ const uploaddata = async (req, res) => {
 
             // Get the contract from the network.
             const contract = network.getContract(chaincodeName, 'DataContract');
-            // const datasets_contracts = network.getContract(chaincodeName, 'DatasetsContract');
-
-            //let timestamp = Date.now();
-            // console.log(data.data_id)
+  
 
             console.log('\n--> Submit Transaction: InitLedger, function creates the initial set of assets on the ledger');
             let result= await contract.submitTransaction('UploadData', data, identity, secret);
-            // let datas = await datasets_contracts.submitTransaction('StoreData', data, identity, "public");
-            // console.log(datas)
-            // console.log(prettyJSONString(datas.toString()));
+
             console.log('*** Result: committed');
             console.log(`*** Result: ${prettyJSONString(result.toString())}`);
             // console.log(`*** Result: ${action.toString()}`);
 
-            // if (actionJSON.GrantedPermission == true) {
+            gateway.disconnect();
 
-                // const datasets_contracts = network.getContract(datasetCC);
-                // let datastore = await datasets_contracts.submitTransaction('UploadData', identity, data.data_id, data.rights);
-                // console.log(`*** Data stored: ${prettyJSONString(datastore)}`);
-            // }
-            
+
 
             let resultjson = JSON.parse(result.toString());
 
-            // console.log("The result is:", action)
+
 
             //save log to mongodb
             let action = resultjson[0];
@@ -104,14 +95,7 @@ const uploaddata = async (req, res) => {
             await insertlog(hash, action);
 
             res.status(200).send("OK!");
-            // res.status(200).send(actionJSON.GrantedPermission);
-        
 
-        //finally {
-            // Disconnect from the gateway when the application is closing
-            // This will close all connections to the network
-            gateway.disconnect();
-        //}
         
     }
 

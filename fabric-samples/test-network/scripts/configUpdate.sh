@@ -24,6 +24,7 @@ fetchChannelConfig() {
   setGlobals $ORG $PEERNUM
   infoln "The org is ${ORG}"
   infoln "The channel is ${CHANNEL}"
+    infoln "The channel is ${OUTPUT}"
   infoln "Fetching the most recent configuration block for the channel"
   set -x
   peer channel fetch config config_block.pb -o orderer0.orderer.iti.gr:7050  --ordererTLSHostnameOverride orderer0.orderer.iti.gr -c $CHANNEL --tls --cafile "$ORDERER0_CA"

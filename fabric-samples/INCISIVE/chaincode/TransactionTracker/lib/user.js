@@ -6,6 +6,7 @@
 const stringify  = require('json-stringify-deterministic');
 const { Contract } = require('fabric-contract-api');
 const crypto = require('crypto');
+const Datasets = require("./datasets");
 
 
 
@@ -145,7 +146,7 @@ class UserContract extends Contract {
         let hashlog = sha256.update(stringdata).digest('base64');
 
 
-        ctx.stub.putState(id, Buffer.from(stringify(hashlog)));
+        ctx.stub.putState(hashlog, Buffer.from(stringify(hashlog)));
         return JSON.stringify([newaction, hashlog.toString()]);
 
 
@@ -189,7 +190,7 @@ class UserContract extends Contract {
     }
 
 
-
+    // check if user is able to register another user
     async CheckRegistration(ctx, org) {
 
 
@@ -206,11 +207,34 @@ class UserContract extends Contract {
             throw new Error("You are not allowed to register users outside your organization.");
         }
 
-        // return JSON.stringify(true);
-
     }
 
 
+    // CheckDataLogs checks if a user can check the logs based on specific data
+    async CheckDataLogs(ctx, data){
+
+        let role = ctx.clientIdentity.getAttributeValue('role');
+
+        if (!(role == "MEDICAL_PERSONNEL" || role == "ORGANIZATION_ADMINISTRATOR")){
+
+            throw new Error("You are not allowed to check information about data used.");
+        }
+
+        let org = ctx.clientIdentity.getAttributeValue('org');
+
+        let dataorg = await new Datasets().GetDataProvider(ctx, data);
+        // dataorg.toString();
+        // org.toString();
+        // dataorg = JSON.stringify(dataorg);
+
+        if (!(org == dataorg)){
+
+            throw new Error("You are not allowed to check information about data that don't belong to your organization.");
+        }
+
+
+        return [dataorg,org];
+    }
 
 
     

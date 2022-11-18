@@ -37,8 +37,6 @@ const getLogsByUser = async(req, res, next) => {
         if (requestoridentity) {
             console.log('OK! Registered user!!!');
 
-
-
         }
         else{
 
@@ -49,16 +47,17 @@ const getLogsByUser = async(req, res, next) => {
 
         //check if the identity eixsts
         // TODO: check if this is really needed
-        const exists = await wallet.get(identity);
-        if (exists) {
-            console.log('OK! Registered user!!!');
+        if (identity){
+            const exists = await wallet.get(identity);
+            if (exists) {
+                console.log('OK! Registered user!!!');
+            }
+            else{
+    
+                console.log('User identity does not exist in wallet.... Not registered user');
+                throw new Error('User identity does not exist in wallet.... Not registered user')
+            }
         }
-        else{
-
-            console.log('User identity does not exist in wallet.... Not registered user');
-            throw new Error('User identity does not exist in wallet.... Not registered user')
-        }
-
 
 
         const gateway = new Gateway();
@@ -77,12 +76,12 @@ const getLogsByUser = async(req, res, next) => {
         // Get the contract from the network.
         const contract = network.getContract(chaincodeName, 'UserContract');
 
-        let isAdmin = await contract.evaluateTransaction('CheckRole', "ADMINISTRATOR");
+        try {
+            await contract.evaluateTransaction('CheckRole', "ADMINISTRATOR");
+        }
 
-
-        if (!(isAdmin == 'true')){
-
-            throw new Error("You don't have the necessary right to perform this action");
+        catch(err){
+            throw new Error(err)
         }
 
         gateway.disconnect();

@@ -19,6 +19,7 @@ const insertlog = async (hash, log) => {
                 _id: new mongoose.Types.ObjectId(),
                 hash: hash,
                 ID: log.ID,
+                UserRegistered: log.UserRegistered,
                 User:log.User,
                 Date: log.Date,
                 Time: log.Time,

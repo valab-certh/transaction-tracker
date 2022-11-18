@@ -47,7 +47,7 @@ class AIContract extends Contract {
 
         const sha256 = crypto.createHmac("sha256", secret);
         let hashlog = sha256.update(stringdata).digest('base64');
-        ctx.stub.putState(id, Buffer.from(stringify(hashlog)));
+        ctx.stub.putState(hashlog, Buffer.from(stringify(hashlog)));
         return JSON.stringify([newaction, hashlog.toString()]);
 
     }
@@ -80,7 +80,7 @@ class AIContract extends Contract {
 
         const sha256 = crypto.createHmac("sha256", secret);
         let hashlog = sha256.update(stringdata).digest('base64');
-        ctx.stub.putState(id, Buffer.from(stringify(hashlog)));
+        ctx.stub.putState(hashlog, Buffer.from(stringify(hashlog)));
         return JSON.stringify([newaction, hashlog.toString()]);
 
     }

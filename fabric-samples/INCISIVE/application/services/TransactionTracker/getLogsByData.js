@@ -55,30 +55,44 @@ const getLogsByData = async(req, res, next) => {
 
             // Get the contract from the network.
             const contract = network.getContract(chaincodeName, 'UserContract');
+            const datasetcontract = network.getContract(chaincodeName, 'DatasetsContract');
 
-            let isAdmin = await contract.evaluateTransaction('CheckRole', "MEDICAL_PERSONNEL");
 
-            gateway.disconnect();
+            try {
 
-            if (!(isAdmin == 'true')){
+                let result  = await contract.evaluateTransaction('CheckDataLogs', data_id);
+                // console.log(`*** Result: ${prettyJSONString(result.toString())}`);
+                console.log(result.toString());
 
-                throw new Error("You don't have the necessary right to perform this action");
+                // let result = await datasetcontr.evaluateTransaction('GetAllAssets');
+                // console.log(`*** Result: ${prettyJSONString(result.toString())}`);
+
+                // let d = ["dataset 1"].toString();
+                // console.log("initial d is ", d)
+                // // d= JSON.stringify(d);
+                // console.log("d is ", d)
+                // d=d.split(",");
+                // console.log("split d is ", d)
+                // for (i=0; i<d.length; i++){
+
+                //     console.log("Loop ",d[i])
+                // }
+
             }
 
-          
-        }
-        else{
+            catch(err){
 
-            console.log('User identity does not exist in wallet.... Not registered user');
-            throw new Error('User identity does not exist in wallet.... Not registered user');
+                throw new Error (err)
+            }
 
+            gateway.disconnect();
         }
 
 
 
         let logs = await retrieveByData(data_id);
         console.log(logs.toString())
-        let logsjson =JSON.parse(JSON.stringify(logs));
+        let logsjson = JSON.parse(JSON.stringify(logs));
         console.log(logsjson)
         res.status(200).send(logsjson);
         

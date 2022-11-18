@@ -8,23 +8,20 @@ const retrieveByUserOrg = async (username, org) => {
 
     var byuser ;
 
+
     if (username){
         console.log(username);
-        byuser =  db.collection("logs").find({User: username, Org: org}).project({_id:0, __v:0});
-        console.log("1",await byuser.toArray())
+        byuser =  db.collection("logs").find({User: username, Organisation: org}).project({_id:0, __v:0});
+
     }
 
     else {
 
-        byuser =  db.collection("logs").find({Org: org}).project({_id:0, __v:0});
-        console.log("2", await byuser.toArray())
+        byuser =  db.collection("logs").find({Organisation: org}).project({_id:0, __v:0});
 
     }
 
-    // console.log(byuser)
     let logs = await byuser.toArray();
-    console.log(logs)
-
     return logs
 }
 

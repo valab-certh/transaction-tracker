@@ -8,7 +8,7 @@ const walletPath = path.join(__dirname, '..', '..', 'wallet');
 
 // const makeccp = require('../helpers/makeccp');
 const {ccps, msps, caClients, cas} = require('../../helpers/initalization');
-const retrieveByUserOrg= require('../../MongoDB/controllers/retrieveByUserOrg');
+const retrieveByUserOrg = require('../../MongoDB/controllers/retrieveByUserOrg');
 
 function prettyJSONString(inputString) {
 	return JSON.stringify(JSON.parse(inputString), null, 2);
@@ -81,6 +81,7 @@ const getLogsByUserOrg = async(req, res, next) => {
        try{
         
             await contract.evaluateTransaction('CheckRole', "ORGANIZATION_ADMINISTRATOR");
+            console.log("User has the rights !!");
         }
         catch(err){
 
@@ -98,9 +99,9 @@ const getLogsByUserOrg = async(req, res, next) => {
 
 
         let logs = await retrieveByUserOrg(req.body.user, orgJSON);
-        console.log(logs.toString())
+        console.log("Logs to string ",logs)
         let logsjson = JSON.parse(JSON.stringify(logs));
-        console.log(logsjson)
+        console.log("Log json",logsjson)
         res.status(200).send(logsjson);
         
         
