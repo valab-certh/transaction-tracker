@@ -53,7 +53,7 @@ regadmin1();
 app.use(cors(corsOptions));
 
 //use API key verification as middleware
-app.use(keyverification);
+// app.use(keyverification);
 
 //endpoint for registartion of a user
 app.post('/tracker/register', regenrolluser1);
