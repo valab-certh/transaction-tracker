@@ -19,7 +19,6 @@ const trainmodel = require('./services/TransactionTracker/trainmodel');
 const searchdata = require('./services/TransactionTracker/searchdata');
 const returneddata = require('./services/TransactionTracker/accessdata');
 const choosedata = require('./services/TransactionTracker/choosedata');
-// const pseudonymize = require('./services/TransactionTracker/psudonymize');
 const deidentify = require('./services/TransactionTracker/deidentify');
 const annotate = require('./services/TransactionTracker/annotate');
 const annotateAI = require('./services/TransactionTracker/annotateAI');
@@ -28,9 +27,8 @@ const AIservice = require('./services/TransactionTracker/AIservice');
 const uploaddata = require('./services/TransactionTracker/uploaddata');
 const viewData = require('./services/TransactionTracker/viewData');
 
-
-const getdata = require('./services/TransactionTracker/getdata');
-
+const getDataInfo = require('./services/TransactionTracker/getDataInfo');
+const getAllDataOrg = require('./services/TransactionTracker/getAllDataOrg');
 const getLogsByUser = require('./services/TransactionTracker/getLogsByUser');
 const getLogsByUserOrg = require('./services/TransactionTracker/getLogsByUserOrg');
 const getLogsByData = require('./services/TransactionTracker/getLogsByData');
@@ -94,7 +92,8 @@ app.get('/tracker/getlogsbyuserorg', getLogsByUserOrg);
 
 app.get('/tracker/getlogsbydata', getLogsByData);
 
-app.post('/tracker/getdata', getdata);
+app.get('/tracker/getdatainfo', getDataInfo);
+app.get('/tracker/getalldataorg', getAllDataOrg);
 
 
 

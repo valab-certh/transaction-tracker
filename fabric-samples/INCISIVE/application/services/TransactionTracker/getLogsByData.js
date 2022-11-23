@@ -3,7 +3,7 @@ const path = require('path');
 
 
 const channelName = process.env.CHANNEL_NAME;
-const chaincodeName = process.env.CC_NAME;
+const chaincodeName = process.env.DATASETS_CC_NAME;
 const walletPath = path.join(__dirname, '..', '..', 'wallet');
 
 // const makeccp = require('../helpers/makeccp');
@@ -54,36 +54,19 @@ const getLogsByData = async(req, res, next) => {
             const network = await gateway.getNetwork(channelName);
 
             // Get the contract from the network.
-            const contract = network.getContract(chaincodeName, 'UserContract');
-            const datasetcontract = network.getContract(chaincodeName, 'DatasetsContract');
+            const contract = network.getContract(chaincodeName);
 
 
-            try {
+            // try {
 
-                let result  = await contract.evaluateTransaction('CheckDataLogs', data_id);
-                // console.log(`*** Result: ${prettyJSONString(result.toString())}`);
-                console.log(result.toString());
+                await contract.evaluateTransaction('CheckDataLogs', data_id);
 
-                // let result = await datasetcontr.evaluateTransaction('GetAllAssets');
-                // console.log(`*** Result: ${prettyJSONString(result.toString())}`);
+            // }
 
-                // let d = ["dataset 1"].toString();
-                // console.log("initial d is ", d)
-                // // d= JSON.stringify(d);
-                // console.log("d is ", d)
-                // d=d.split(",");
-                // console.log("split d is ", d)
-                // for (i=0; i<d.length; i++){
+            // catch(err){
 
-                //     console.log("Loop ",d[i])
-                // }
-
-            }
-
-            catch(err){
-
-                throw new Error (err)
-            }
+            //     throw new Error (err)
+            // }
 
             gateway.disconnect();
         }
@@ -103,7 +86,7 @@ const getLogsByData = async(req, res, next) => {
 
         console.log('Get logs by data failed with error: '+error);
 
-        res.status(403).send('Get logs by data failed with error: '+error)
+        res.status(403).send('Get logs by data failed with : '+error)
         
 
     }

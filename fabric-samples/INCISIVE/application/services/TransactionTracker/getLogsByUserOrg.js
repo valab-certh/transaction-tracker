@@ -82,17 +82,17 @@ const getLogsByUserOrg = async(req, res, next) => {
         
             await contract.evaluateTransaction('CheckRole', "ORGANIZATION_ADMINISTRATOR");
             console.log("User has the rights !!");
+
+            let org = await contract.evaluateTransaction('GetOrg');
+            var orgJSON = JSON.parse(org);
+            console.log(orgJSON)
         }
         catch(err){
 
-            throw new Error(err)
+            throw new Error("You don't have the rights to perform this action")
         }
 
 
-
-        let org = await contract.evaluateTransaction('GetOrg');
-        let orgJSON = JSON.parse(org);
-        console.log(orgJSON)
 
         gateway.disconnect();
 
