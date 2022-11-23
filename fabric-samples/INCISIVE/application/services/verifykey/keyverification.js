@@ -25,7 +25,7 @@ var keyverification= function(req, res, next){
     }
     catch(err){
 
-        throw new Error ("Header is missing API key")
+        return res.status(403).send("Header is missing API key")
         
     }
 
