@@ -81,7 +81,7 @@ const getLogsByUser = async(req, res, next) => {
         }
 
         catch(err){
-            throw new Error(err)
+            throw new Error("You don't have the necessary rights to perform this action")
         }
 
         gateway.disconnect();
@@ -101,7 +101,7 @@ const getLogsByUser = async(req, res, next) => {
 
         console.log('Get logs by user failed with error: '+error);
 
-        res.status(403).send('Get logs by user failed with error: '+error)
+        res.status(403).send('Get logs by user failed with : '+error)
         
 
     }

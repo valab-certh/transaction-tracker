@@ -111,14 +111,14 @@ class DatasetsContract extends Contract {
 
 
   // ReadData returns the data stored in the world state with given id.
-  async ReadData(ctx, data_id) {
-    const dataJSON = await ctx.stub.getState(data_id); // get the data from chaincode state
-    if (!dataJSON || dataJSON.length === 0) {
-      throw new Error(`The data with id ${data_id} does not exist`);
-    }
+    async ReadData(ctx, data_id) {
+        const dataJSON = await ctx.stub.getState(data_id); // get the data from chaincode state
+        if (!dataJSON || dataJSON.length === 0) {
+                throw new Error(`The data with id ${data_id} does not exist`);
+            }
 
-    return dataJSON.toString();
-}
+            return dataJSON.toString();
+    }
 
 
 
@@ -126,39 +126,98 @@ class DatasetsContract extends Contract {
     async DataExists(ctx, data_id) {
         const dataJSON = await ctx.stub.getState(data_id);
         return dataJSON && dataJSON.length > 0;
-  }
-
-
-
-  async GetDataProvider(ctx, data){
-
-    let currentData = await this.ReadData(ctx, data);
-
-    currentData = JSON.parse(currentData);
-
-    return currentData.DataProvider;
-  }
-
-
-  async GetAllAssets(ctx) {
-    const allResults = [];
-    // range query with empty string for startKey and endKey does an open-ended query of all assets in the chaincode namespace.
-    const iterator = await ctx.stub.getStateByRange('', '');
-    let result = await iterator.next();
-    while (!result.done) {
-        const strValue = Buffer.from(result.value.value.toString()).toString('utf8');
-        let record;
-        try {
-            record = JSON.parse(strValue);
-        } catch (err) {
-            console.log(err);
-            record = strValue;
-        }
-        allResults.push({ Key: result.value.key, Record: record });
-        result = await iterator.next();
     }
-    return JSON.stringify(allResults);
-}
+
+
+
+    async GetDataProvider(ctx, data){
+
+        let currentData = await this.ReadData(ctx, data);
+
+        currentData = JSON.parse(currentData);
+
+        return currentData.DataProvider;
+    }
+
+
+    // Get Dataset retrieves information about a specific dataset if it exists.
+    async GetDataset(ctx, data_id){
+
+        const dataJSON = await ctx.stub.getState(data_id);
+        if ( !dataJSON || dataJSON.length ==0 ){
+
+            throw new Error (`The dataset ${data_id} does not exist.`);
+        }
+
+        return dataJSON.toString();
+    }
+
+
+    async GetAllAssets(ctx) {
+        const allResults = [];
+        // range query with empty string for startKey and endKey does an open-ended query of all assets in the chaincode namespace.
+        const iterator = await ctx.stub.getStateByRange('', '');
+        let result = await iterator.next();
+        while (!result.done) {
+            const strValue = Buffer.from(result.value.value.toString()).toString('utf8');
+            let record;
+            try {
+                record = JSON.parse(strValue);
+            } 
+            catch (err) {
+                console.log(err);
+                record = strValue;
+            }
+            allResults.push({ Key: result.value.key, Record: record });
+            result = await iterator.next();
+        }
+        return allResults;
+    }
+    
+    // GetDatasetOrg returns all datasets belonging to a specific data provider (organization)
+    async GetDatasetOrg(ctx){
+
+        let role = ctx.clientIdentity.getAttributeValue('role');
+
+        if (!(role == "MEDICAL_PERSONNEL" || role == "ORGANIZATION_ADMINISTRATOR")){
+
+            throw new Error("You are not allowed to check information about data used.");
+        }
+
+        let org = ctx.clientIdentity.getAttributeValue('org');
+
+        let allDatasets = await this.GetAllAssets(ctx); // get all assets
+        let datasetsOfOrg = allDatasets.filter( (dataset) => dataset.Record.DataProvider === org); // filter by type
+
+        return JSON.stringify(datasetsOfOrg);
+    }
+
+
+
+    // CheckDataLogs checks if a user can check the logs based on specific data
+    async CheckDataLogs(ctx, data){
+
+        let role = ctx.clientIdentity.getAttributeValue('role');
+
+        if (!(role == "MEDICAL_PERSONNEL" || role == "ORGANIZATION_ADMINISTRATOR")){
+
+            throw new Error("You are not allowed to check information about data used.");
+        }
+
+        let org = ctx.clientIdentity.getAttributeValue('org');
+
+        // let dataorg = await new Datasets().GetDataProvider(ctx, data);
+        let dataorg = await this.GetDataProvider(ctx,data); //invoke func from another CC
+        
+
+        if (!(org == dataorg)){
+
+            throw new Error("You are not allowed to check information about data that don't belong to your organization.");
+        }
+
+
+
+    }
 
 }
 

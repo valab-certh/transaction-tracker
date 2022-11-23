@@ -5,7 +5,7 @@
 // Deterministic JSON.stringify()
 const stringify  = require('json-stringify-deterministic');
 const { Contract } = require('fabric-contract-api');
-const Datasets = require('./datasets');
+
 const crypto = require('crypto');
 
 class DataContract extends Contract {
@@ -46,7 +46,9 @@ class DataContract extends Contract {
 
         try{
 
-         await new Datasets().StoreData(ctx, data_id, actor, "Public");
+        //  await new Datasets().StoreData(ctx, data_id, actor, "Public");
+          // source: https://bitbucket.org/beyondi-bbd/workspace/snippets/7n5MoM
+            await ctx.stub.invokeChaincode('datasets', ['StoreData', data_id, actor, "Public"], 'mychannel'); //invoke func from another CC
 
         }
 
@@ -159,8 +161,7 @@ class DataContract extends Contract {
             Role: role,
             Date: timestamp.toDateString(),
             Time: timestamp.toTimeString(),
-            Action: 'Deidentify data',
-            Data: data
+            Action: 'Deidentify data'
 
         }
 
@@ -193,8 +194,7 @@ class DataContract extends Contract {
             Role: role,
             Date: timestamp.toDateString(),
             Time: timestamp.toTimeString(),
-            Action: 'Annotate',
-            Data: data
+            Action: 'Annotate'
 
         }
 
@@ -264,8 +264,7 @@ class DataContract extends Contract {
             Role: role,
             Date: timestamp.toDateString(),
             Time: timestamp.toTimeString(),
-            Action: 'Data Quality Check',
-            Data: data
+            Action: 'Data Quality Check'
 
         }
 
