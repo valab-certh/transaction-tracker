@@ -15,20 +15,21 @@ var keyverification= function(req, res, next){
     // hmac = hash(raw_message, secretkey)
     
     // Incoming raw message must be a stringified JSON
-    let splits;
+
     try{
         var header_key = req.header('x-api-key');
         console.log("HEADER", header_key)
-        splits = header_key.split('_');
+        let splits = header_key.split('_');
+        var key = splits[0];
+        var hmac = splits[1];
     }
     catch(err){
 
-        throw new Error ("Missing api key")
+        throw new Error ("Header is missing API key")
         
     }
 
-    var key = splits[0];
-    var hmac = splits[1];
+
     var body = JSON.stringify(req.body);
     console.log("APIKEY",key)
     console.log("HMAC",hmac)
