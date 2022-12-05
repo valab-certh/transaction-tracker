@@ -110,18 +110,6 @@ class DatasetsContract extends Contract {
 
 
 
-  // ReadData returns the data stored in the world state with given id.
-    async ReadData(ctx, data_id) {
-        const dataJSON = await ctx.stub.getState(data_id); // get the data from chaincode state
-        if (!dataJSON || dataJSON.length === 0) {
-                throw new Error(`The data with id ${data_id} does not exist`);
-            }
-
-            return dataJSON.toString();
-    }
-
-
-
     // DataExists returns true when data with the given ID exists in world state.
     async DataExists(ctx, data_id) {
         const dataJSON = await ctx.stub.getState(data_id);

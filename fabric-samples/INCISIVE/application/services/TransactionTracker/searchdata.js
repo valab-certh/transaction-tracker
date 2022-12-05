@@ -34,21 +34,18 @@ const searchdata = async(req, res, next) => {
 
 
         //check if the identity eixsts
-        const exists = await wallet.get(identity);
-        if (exists) {
-            console.log('OK! Registered user!!!');
-        }
-        else{
+        await wallet.get(identity);
+        // if (exists) {
+        //     console.log('OK! Registered user!!!');
+        // }
+        // else{
 
-            console.log('User identity does not exist in wallet.... Not registered user');
-            res.status(403).send('User identity does not exist in wallet.... Not registered user')
-            return;
-        }
+        //     console.log('User identity does not exist in wallet.... Not registered user');
+        //     res.status(403).send('User identity does not exist in wallet.... Not registered user')
+        //     return;
+        // }
 
 
-        // Create a new gateway instance for interacting with the fabric network.
-        // In a real application this would be done as the backend server session is setup for
-        // a user that has been verified.
         const gateway = new Gateway();
 
         // setup the gateway instance
@@ -57,53 +54,52 @@ const searchdata = async(req, res, next) => {
         // signed by this user using the credentials stored in the wallet.
         
 
-            console.log("Trying to connect to gateway...")
-            await gateway.connect(ccp, {
-                wallet,
-                identity: identity,
-                discovery: { enabled: true, asLocalhost: true } // using asLocalhost as this gateway is using a fabric network deployed locally
-            });
-            console.log("Connected!!!")
+        console.log("Trying to connect to gateway...")
+        await gateway.connect(ccp, {
+            wallet,
+            identity: identity,
+            discovery: { enabled: true, asLocalhost: true } // using asLocalhost as this gateway is using a fabric network deployed locally
+        });
+        console.log("Connected!!!")
 
-            // Build a network instance based on the channel where the smart contract is deployed
-            const network = await gateway.getNetwork(channelName);
+        // Build a network instance based on the channel where the smart contract is deployed
+        const network = await gateway.getNetwork(channelName);
 
-            // Get the contract from the network.
-            const contract = network.getContract(chaincodeName, 'DataContract');
+        // Get the contract from the network.
+        const contract = network.getContract(chaincodeName, 'DataContract');
 
-            //let timestamp = Date.now();
+        //let timestamp = Date.now();
 
-            console.log('\n--> Submit Transaction: InitLedger, function creates the initial set of assets on the ledger');
-            let result = await contract.submitTransaction('SearchData', query, identity, secret);
+        console.log('\n--> Submit Transaction: InitLedger, function creates the initial set of assets on the ledger');
+        let result = await contract.submitTransaction('SearchData', query, identity, secret);
 
-            console.log('*** Result: committed');
-            let resultjson = JSON.parse(result.toString());
-            console.log(`*** Result: ${prettyJSONString(result.toString())}`);
-            // console.log("The result is:", action)
+        console.log('*** Result: committed');
+        let resultjson = JSON.parse(result.toString());
+        console.log(`*** Result: ${prettyJSONString(result.toString())}`);
+        // console.log("The result is:", action)
 
-            //save log to mongodb
-            let action = resultjson[0];
-            console.log('action', action)
-            let hash = resultjson[1];
-            console.log('hash', hash)
-            await insertlog(hash, action);
+        //save log to mongodb
+        let action = resultjson[0];
+        console.log('action', action)
+        let hash = resultjson[1];
+        console.log('hash', hash)
+        await insertlog(hash, action);
 
-            res.status(200).send("OK!");
-        
+        res.status(200).send("OK!");
+    
 
-        //finally {
-            // Disconnect from the gateway when the application is closing
-            // This will close all connections to the network
-            gateway.disconnect();
-        //}
+
+        // Disconnect from the gateway when the application is closing
+        // This will close all connections to the network
+        gateway.disconnect();
         
     }
 
     catch(error) {
 
-        console.log('New critical action (search data) submission failed with error: '+error);
+        console.log('Search data action submission failed with error: '+error);
 
-        res.status(403).send('New critical action (search data) submission failed ...')
+        res.status(403).send('Search data action submission failed with '+error)
         
 
     }

@@ -56,35 +56,35 @@ app.use(cors(corsOptions));
 app.use(keyverification);
 
 //endpoint for registartion of a user
-app.post('/tracker/register', regenrolluser1);
+app.post('/tracker/register', regenrolluser1); //integrated
 
 app.post('/tracker/removeuser', revokeuser);
 
-app.post('/tracker/login', login);
+app.post('/tracker/login', login); //integrated
 
-app.post('/tracker/logout', logout);
+app.post('/tracker/logout', logout); //integrated
 
-app.post('/tracker/searchdata', searchdata);
+app.post('/tracker/searchdata', searchdata); // to be integrated
 
-app.post('/tracker/returneddata', returneddata);
+app.post('/tracker/returneddata', returneddata); // to be integrated
 
-app.post('/tracker/choosedata', choosedata);
+app.post('/tracker/choosedata', choosedata); // to be integrated
 
-app.post('/tracker/uploaddata', uploaddata);
+app.post('/tracker/uploaddata', uploaddata); // to be integrated
 
 app.post('/tracker/deidentify', deidentify);
 
 app.post('/tracker/annotate', annotate);
 
-app.post('/tracker/annotateai', annotateAI);
+// app.post('/tracker/annotateai', annotateAI);
 
 app.post('/tracker/qualitycheck', qualitycheck);
 
 app.post('/tracker/viewdata', viewData)
 
-app.post('/tracker/aiservice', AIservice);
+app.post('/tracker/aiservice', AIservice); // to be integrated
 
-app.post('/tracker/trainmodel', trainmodel);
+app.post('/tracker/trainmodel', trainmodel); // to be integrated
 
 app.get('/tracker/getlogsbyuser', getLogsByUser);
 
@@ -93,6 +93,7 @@ app.get('/tracker/getlogsbyuserorg', getLogsByUserOrg);
 app.get('/tracker/getlogsbydata', getLogsByData);
 
 app.get('/tracker/getdatainfo', getDataInfo);
+
 app.get('/tracker/getalldataorg', getAllDataOrg);
 
 

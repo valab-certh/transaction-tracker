@@ -36,49 +36,87 @@ const getLogsByData = async(req, res, next) => {
         const requestoridentity = await wallet.get(requestor);
 
         // if user exists, check if user is an admin and hence can check the logs
+        // if user exists, check if user is an admin and hence can check the logs
         if (requestoridentity) {
             console.log('OK! Registered user!!!');
 
-            const gateway = new Gateway();
+        }
+        else{
+
+            console.log('User identity does not exist in wallet.... Not registered user');
+            throw new Error('User identity does not exist in wallet.... Not registered user');
+
+        }
+
+        const gateway = new Gateway();
 
 
-            console.log("Trying to connect to gateway...")
-            await gateway.connect(ccp, {
-                wallet,
-                identity: requestoridentity,
-                discovery: { enabled: true, asLocalhost: true } // using asLocalhost as this gateway is using a fabric network deployed locally
-            });
-            console.log("Connected!!!")
+        console.log("Trying to connect to gateway...")
+        await gateway.connect(ccp, {
+            wallet,
+            identity: requestoridentity,
+            discovery: { enabled: true, asLocalhost: true } // using asLocalhost as this gateway is using a fabric network deployed locally
+        });
+        console.log("Connected!!!")
 
-            // Build a network instance based on the channel where the smart contract is deployed
-            const network = await gateway.getNetwork(channelName);
+        // Build a network instance based on the channel where the smart contract is deployed
+        const network = await gateway.getNetwork(channelName);
 
-            // Get the contract from the network.
-            const contract = network.getContract(chaincodeName);
+        // Get the contract from the network.
+        const contract = network.getContract(chaincodeName);
 
 
-            // try {
+        // There are two cases:
+        // 1) When data is provided as an argument, then the logs containing the specific dataset are returned
+        // 2) When no data is provided, we consider that the user wants all data, so the logs containg either one of the data
+        // belonging to this organization are returned
 
+        //  Case 1): data_id is provided
+        if (data_id){
+
+            try{
                 await contract.evaluateTransaction('CheckDataLogs', data_id);
+            }
+            catch(err){
+    
+                throw new Error("You are not allowed to perform this action or data don't belong to your organization")
+    
+            }
 
-            // }
+            let logs = await retrieveByData(data_id);
+            console.log(logs.toString())
+            let logsjson = JSON.parse(JSON.stringify(logs));
+            console.log(logsjson)
+            res.status(200).send(logsjson);
 
-            // catch(err){
+        }
 
-            //     throw new Error (err)
-            // }
+        // Case 2): data_id is empty
+        else{
 
-            gateway.disconnect();
+            console.log('\n--> Evaluate Transaction: GetDataset, function retieves info about a specific dataset');
+            let result = await contract.evaluateTransaction('GetDatasetOrg');
+            console.log('*** Result: committed');
+            console.log(result)
+
+
+            let datasetarray = [];
+
+            let resultJSON = JSON.parse(result);
+
+            for (let i =0; i<resultJSON.length; i++){
+
+                console.log(Object.keys(resultJSON[i]))
+                datasetarray.push(resultJSON[i].Key)
+            }
+
+            res.status(200).send(datasetarray);
         }
 
 
-
-        let logs = await retrieveByData(data_id);
-        console.log(logs.toString())
-        let logsjson = JSON.parse(JSON.stringify(logs));
-        console.log(logsjson)
-        res.status(200).send(logsjson);
         
+
+        gateway.disconnect();
         
     }
 
