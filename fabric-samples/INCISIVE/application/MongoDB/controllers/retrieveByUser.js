@@ -6,7 +6,7 @@ const retrieveByUser = async (username) => {
 
     var byuser;
 
-    if (username){
+    if (username && username != "All"){
 
         byuser =  db.collection("logs").find({User: username}).project({_id:0, __v:0});
     }

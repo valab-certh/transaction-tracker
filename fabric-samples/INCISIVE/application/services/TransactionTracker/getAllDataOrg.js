@@ -11,11 +11,8 @@ const walletPath = path.join(__dirname,'..', '..', 'wallet');
 
 
 const {ccps, msps, caClients, cas} = require('../../helpers/initalization');
-function prettyJSONString(inputString) {
-	return JSON.stringify(JSON.parse(inputString), null, 2);
-}
 
-// this service allows a user to get info about all datasets under an org
+// this service allows a user to get info about all datasets under an organization
 const getAllDataOrg = async(req, res, next) => {
 
     //should be given by request or taken from a token (e.g. jwt)
@@ -31,55 +28,53 @@ const getAllDataOrg = async(req, res, next) => {
         const wallet = await Wallets.newFileSystemWallet(path.join(walletPath, 'incisive'));
 
         //check if the identity eixsts
-        const exists = await wallet.get(identity);
-        if (exists) {
-            console.log('OK! Registered user!!!');
-        }
-        else{
+        await wallet.get(identity);
+        // if (exists) {
+        //     console.log('OK! Registered user!!!');
+        // }
+        // else{
 
-            console.log('User identity does not exist in wallet.... Not registered user');
-            res.status(403).send('User identity does not exist in wallet.... Not registered user')
-            return;
-        }
+        //     console.log('User identity does not exist in wallet.... Not registered user');
+        //     res.status(403).send('User identity does not exist in wallet.... Not registered user')
+        //     return;
+        // }
 
 
         const gateway = new Gateway();
 
 
-            console.log("Trying to connect to gateway...")
-            await gateway.connect(ccp, {
-                wallet,
-                identity: identity,
-                discovery: { enabled: true, asLocalhost: true } // using asLocalhost as this gateway is using a fabric network deployed locally
-            });
-            console.log("Connected!!!")
+        console.log("Trying to connect to gateway...")
+        await gateway.connect(ccp, {
+            wallet,
+            identity: identity,
+            discovery: { enabled: true, asLocalhost: true } // using asLocalhost as this gateway is using a fabric network deployed locally
+        });
+        console.log("Connected!!!")
 
-            // Build a network instance based on the channel where the smart contract is deployed
-            const network = await gateway.getNetwork(channelName);
+        // Build a network instance based on the channel where the smart contract is deployed
+        const network = await gateway.getNetwork(channelName);
 
-            // Get the contract from the network.
-            console.log(chaincodeName)
-            const datasetcontract = network.getContract(chaincodeName);
+        // Get the contract from the network.
+        console.log(chaincodeName)
+        const datasetcontract = network.getContract(chaincodeName);
 
-            console.log('\n--> Evaluate Transaction: GetDataset, function retieves info about a specific dataset');
-            let result = await datasetcontract.evaluateTransaction('GetDatasetOrg');
-            console.log('*** Result: committed');
-            console.log(result)
+        console.log('\n--> Evaluate Transaction: GetDataset, function retieves info about a specific dataset');
+        let result = await datasetcontract.evaluateTransaction('GetDatasetOrg');
+        console.log('*** Result: committed');
+        console.log(result)
 
-            gateway.disconnect();
-            // console.log(`*** Result: ${prettyJSONString(result.toString())}`);
-            // console.log("The result is:", action)
-            let datasetarray = [];
+        gateway.disconnect();
+        let datasetarray = [];
 
-            let resultJSON = JSON.parse(result);
-            for (let i =0; i<resultJSON.length; i++){
+        let resultJSON = JSON.parse(result);
+        for (let i =0; i<resultJSON.length; i++){
 
-                console.log(resultJSON[i].Record)
-                datasetarray.push(resultJSON[i].Record)
-            }
+            console.log(resultJSON[i].Record)
+            datasetarray.push(resultJSON[i].Record)
+        }
 
 
-            res.status(200).send((datasetarray));
+        res.status(200).send((datasetarray));
         
     }
 

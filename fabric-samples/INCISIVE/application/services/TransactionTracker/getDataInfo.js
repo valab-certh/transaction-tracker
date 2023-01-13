@@ -35,55 +35,55 @@ const getDataInfo = async(req, res, next) => {
         const wallet = await Wallets.newFileSystemWallet(path.join(walletPath, 'incisive'));
 
         //check if the identity eixsts
-        const exists = await wallet.get(identity);
-        if (exists) {
-            console.log('OK! Registered user!!!');
-        }
-        else{
+        await wallet.get(identity);
+        // if (exists) {
+            // console.log('OK! Registered user!!!');
+        // }
+        // else{
 
-            console.log('User identity does not exist in wallet.... Not registered user');
-            res.status(403).send('User identity does not exist in wallet.... Not registered user')
-            return;
-        }
+        //     console.log('User identity does not exist in wallet.... Not registered user');
+        //     res.status(403).send('User identity does not exist in wallet.... Not registered user')
+        //     return;
+        // }
 
 
         const gateway = new Gateway();
 
 
-            console.log("Trying to connect to gateway...")
-            await gateway.connect(ccp, {
-                wallet,
-                identity: identity,
-                discovery: { enabled: true, asLocalhost: true } // using asLocalhost as this gateway is using a fabric network deployed locally
-            });
-            console.log("Connected!!!")
+        console.log("Trying to connect to gateway...")
+        await gateway.connect(ccp, {
+            wallet,
+            identity: identity,
+            discovery: { enabled: true, asLocalhost: true } // using asLocalhost as this gateway is using a fabric network deployed locally
+        });
+        console.log("Connected!!!")
 
-            // Build a network instance based on the channel where the smart contract is deployed
-            const network = await gateway.getNetwork(channelName);
+        // Build a network instance based on the channel where the smart contract is deployed
+        const network = await gateway.getNetwork(channelName);
 
-            // Get the contract from the network.
-            console.log(chaincodeName)
-            const contract = network.getContract(chaincodeName);
-
-
-            console.log('\n--> Evaluate Transaction: GetDataset, function retieves info about a specific dataset');
-            let result = await contract.evaluateTransaction('GetDataset', data);
-            console.log('*** Result: committed');
-            console.log(`*** Result: ${prettyJSONString(result.toString())}`);
-            // console.log("The result is:", action)
-
-            gateway.disconnect();
+        // Get the contract from the network.
+        console.log(chaincodeName)
+        const contract = network.getContract(chaincodeName);
 
 
-            res.status(200).send(JSON.parse(result));
+        console.log('\n--> Evaluate Transaction: GetDataset, function retieves info about a specific dataset');
+        let result = await contract.evaluateTransaction('GetDataset', data);
+        console.log('*** Result: committed');
+        console.log(`*** Result: ${prettyJSONString(result.toString())}`);
+        // console.log("The result is:", action)
+
+        gateway.disconnect();
+
+
+        res.status(200).send(JSON.parse(result));
         
     }
 
     catch(error) {
 
-        console.log('Get info about data failed with error: '+error);
+        console.log('Get info about data failed with '+error);
 
-        res.status(403).send('Get info about data failed with error: '+error)
+        res.status(403).send('Get info about data failed with '+error)
         
 
     }

@@ -19,7 +19,9 @@ function prettyJSONString(inputString) {
 const uploaddata = async (req, res) => {
 
     //should be given by request or taken from a token (e.g. jwt)
-    const identity = req.body.user;
+    // const identity = req.body.user;
+    let identity = res.locals.org;
+    console.log(identity);
     let data = req.body.data;
     console.log(req.body)
 
@@ -39,29 +41,18 @@ const uploaddata = async (req, res) => {
 
 
         //check if the identity eixsts
-        await wallet.get(identity);
-        // if (exists) {
-        //     console.log('OK! Registered user!!!');
-        // }
-        // else{
-
-        //     console.log('User identity does not exist in wallet.... Not registered user');
-        //     res.status(403).send('User identity does not exist in wallet.... Not registered user')
-        //     return;
-        // }
+        // TODO: if identity is not registered in the blockchain, then the admin of the system should open the gateway
+        // DONE: only the DP organization is needed, it will be taken from the API key
+        // await wallet.get(identity);
 
 
         const gateway = new Gateway();
 
-        // setup the gateway instance
-        // The user will now be able to create connections to the fabric network and be able to
-        // submit transactions and query. All transactions submitted by this gateway will be
-        // signed by this user using the credentials stored in the wallet.
-
         console.log("Trying to connect to gateway...")
         await gateway.connect(ccp, {
             wallet,
-            identity: identity,
+            // identity: identity,
+            identity: "admin@incisive-project.eu", // this is in case the user is not registered in the bc/platform
             discovery: { enabled: true, asLocalhost: true } // using asLocalhost as this gateway is using a fabric network deployed locally
         });
         console.log("Connected!!!")

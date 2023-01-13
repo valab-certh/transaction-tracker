@@ -16,9 +16,8 @@ class DatasetsContract extends Contract {
 
     // StoreData is used to store metadata about the medical dataon the ledger, either it is about new data or add data to existing data.
     // TODO: Add check if user is a data provider and can upload data
-    async StoreData(ctx, data, user, dataType){
+    async StoreData(ctx, data, user){
 
-        let org = ctx.clientIdentity.getAttributeValue('org');
         let timestamp = ctx.stub.getDateTimestamp();
 
 
@@ -37,12 +36,12 @@ class DatasetsContract extends Contract {
 
                     ID: data_id[i],
                     Uploader: user,
-                    DataProvider: org,
+                    DataProvider: user,
                     DateShared: timestamp.toDateString(),
                     TimeShared: timestamp.toTimeString(),
                     DateModified: timestamp.toDateString(),
-                    TimeModified: timestamp.toTimeString(),
-                    Type:dataType   //n represents if data is public or private
+                    TimeModified: timestamp.toTimeString()
+
 
                 };
                 await ctx.stub.putState(data_id[i], Buffer.from(stringify((data))));
@@ -51,7 +50,7 @@ class DatasetsContract extends Contract {
 
             else {
 
-                let data = await this.ReadData(ctx, data_id[i]);
+                let data = await this.GetDataset(ctx, data_id[i]);
                 data = JSON.parse(data);
                 data.DateModified = timestamp.toDateString();
                 data.TimeModified = timestamp.toTimeString();
@@ -77,7 +76,7 @@ class DatasetsContract extends Contract {
             throw new Error(`You can't remove data that does not exist.`);
         }
 
-        let currentData = await this.ReadData(ctx, data_id);
+        let currentData = await this.GetDataset(ctx, data_id);
         currentData.DateModified = timestamp.toDateString();
         currentData.TimeModified = timestamp.toTimeString();
 
@@ -100,7 +99,7 @@ class DatasetsContract extends Contract {
         }
 
 
-        let currentData = await this.ReadData(ctx, data_id);
+        let currentData = await this.GetDataset(ctx, data_id);
 
         await ctx.stub.DeleteData(data_id);
 
@@ -120,7 +119,7 @@ class DatasetsContract extends Contract {
 
     async GetDataProvider(ctx, data){
 
-        let currentData = await this.ReadData(ctx, data);
+        let currentData = await this.GetDataset(ctx, data);
 
         currentData = JSON.parse(currentData);
 
@@ -202,6 +201,8 @@ class DatasetsContract extends Contract {
 
             throw new Error("You are not allowed to check information about data that don't belong to your organization.");
         }
+
+        return (org == dataorg);
 
 
 

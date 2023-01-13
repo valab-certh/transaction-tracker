@@ -36,6 +36,7 @@ const getLogsByData = require('./services/TransactionTracker/getLogsByData');
 
 const {keyverification} = require('./services/verifykey/keyverification');
 
+const {EtlKeyVerification} = require('./services/verifykey/ETLKeyVerification');
 
 //configure cors for allowing specific origins
 const corsOptions = {
@@ -53,48 +54,52 @@ regadmin1();
 app.use(cors(corsOptions));
 
 //use API key verification as middleware
-app.use(keyverification);
+// app.use(keyverification);
 
 //endpoint for registartion of a user
-app.post('/tracker/register', regenrolluser1); //integrated
+app.post('/tracker/register', keyverification, regenrolluser1); //integrated
 
-app.post('/tracker/removeuser', revokeuser);
+app.post('/tracker/removeuser', keyverification, revokeuser);
 
-app.post('/tracker/login', login); //integrated
+app.post('/tracker/login', keyverification, login); //integrated
 
-app.post('/tracker/logout', logout); //integrated
+app.post('/tracker/logout', keyverification, logout); //integrated
 
-app.post('/tracker/searchdata', searchdata); // to be integrated
+app.post('/tracker/searchdata', keyverification, searchdata); // to be integrated
 
-app.post('/tracker/returneddata', returneddata); // to be integrated
+app.post('/tracker/returneddata', keyverification, returneddata); // to be integrated
 
-app.post('/tracker/choosedata', choosedata); // to be integrated
+app.post('/tracker/choosedata', keyverification, choosedata); // to be integrated
 
-app.post('/tracker/uploaddata', uploaddata); // to be integrated
+app.post('/tracker/uploaddata', EtlKeyVerification, uploaddata); // to be integrated
 
-app.post('/tracker/deidentify', deidentify);
+app.post('/tracker/deidentify', keyverification, deidentify);
 
-app.post('/tracker/annotate', annotate);
+app.post('/tracker/annotate', keyverification, annotate);
 
 // app.post('/tracker/annotateai', annotateAI);
 
-app.post('/tracker/qualitycheck', qualitycheck);
+app.post('/tracker/qualitycheck', keyverification, qualitycheck);
 
-app.post('/tracker/viewdata', viewData)
+app.post('/tracker/viewdata', keyverification, viewData)
 
-app.post('/tracker/aiservice', AIservice); // to be integrated
+app.post('/tracker/aiservice', keyverification, AIservice); // to be integrated
 
-app.post('/tracker/trainmodel', trainmodel); // to be integrated
+app.post('/tracker/trainmodel', keyverification, trainmodel); // to be integrated
 
-app.get('/tracker/getlogsbyuser', getLogsByUser);
 
-app.get('/tracker/getlogsbyuserorg', getLogsByUserOrg);
+// AUDITING MECHANISM
 
-app.get('/tracker/getlogsbydata', getLogsByData);
+app.get('/tracker/getlogsbyuser', keyverification, getLogsByUser);
 
-app.get('/tracker/getdatainfo', getDataInfo);
+app.get('/tracker/getlogsbyuserorg', keyverification, getLogsByUserOrg);
 
-app.get('/tracker/getalldataorg', getAllDataOrg);
+app.get('/tracker/getlogsbydata', keyverification, getLogsByData);
+
+app.get('/tracker/getdatainfo',  keyverification,getDataInfo);
+
+app.get('/tracker/getalldataorg', keyverification, getAllDataOrg);
+
 
 
 

@@ -36,7 +36,6 @@ const getLogsByData = async(req, res, next) => {
         const requestoridentity = await wallet.get(requestor);
 
         // if user exists, check if user is an admin and hence can check the logs
-        // if user exists, check if user is an admin and hence can check the logs
         if (requestoridentity) {
             console.log('OK! Registered user!!!');
 
@@ -44,7 +43,7 @@ const getLogsByData = async(req, res, next) => {
         else{
 
             console.log('User identity does not exist in wallet.... Not registered user');
-            throw new Error('User identity does not exist in wallet.... Not registered user');
+            throw new Error('Not registered user');
 
         }
 
@@ -66,16 +65,18 @@ const getLogsByData = async(req, res, next) => {
         const contract = network.getContract(chaincodeName);
 
 
-        // There are two cases:
+        // There are three cases:
         // 1) When data is provided as an argument, then the logs containing the specific dataset are returned
-        // 2) When no data is provided, we consider that the user wants all data, so the logs containg either one of the data
+        // 2) When the "All" argument is provided, we consider that the user wants all data, so the logs containg either one of the data
         // belonging to this organization are returned
+        // 3) When no data is provided, it returnes an error
 
         //  Case 1): data_id is provided
-        if (data_id){
+        if (data_id && data_id != "All"){
 
             try{
-                await contract.evaluateTransaction('CheckDataLogs', data_id);
+            await contract.evaluateTransaction('CheckDataLogs', data_id);
+
             }
             catch(err){
     
@@ -83,16 +84,21 @@ const getLogsByData = async(req, res, next) => {
     
             }
 
-            let logs = await retrieveByData(data_id);
+            let logs = await retrieveByData([data_id]);
+
+            if (!(Array.isArray(logs) && logs.length)){
+
+                throw new Error('Non existent data or data has not yet performed any action.');
+            }
             console.log(logs.toString())
             let logsjson = JSON.parse(JSON.stringify(logs));
             console.log(logsjson)
-            res.status(200).send(logsjson);
+            res.status(200).send({"Logs":logsjson});
 
         }
 
-        // Case 2): data_id is empty
-        else{
+        // Case 2): data_id is All
+        else if (data_id == "All"){
 
             console.log('\n--> Evaluate Transaction: GetDataset, function retieves info about a specific dataset');
             let result = await contract.evaluateTransaction('GetDatasetOrg');
@@ -110,7 +116,23 @@ const getLogsByData = async(req, res, next) => {
                 datasetarray.push(resultJSON[i].Key)
             }
 
-            res.status(200).send(datasetarray);
+            let logs = await retrieveByData(datasetarray);
+            if (!(Array.isArray(logs) && logs.length)){
+
+                throw new Error('Non existent data or data has not yet performed any action.');
+            }
+            console.log(logs.toString())
+            let logsjson = JSON.parse(JSON.stringify(logs));
+            console.log(logsjson)
+            res.status(200).send({"Logs":logsjson});
+
+
+        }
+
+        // Case 3) no input is provided
+        else {
+
+            throw new Error("Please select a data to see the logs for.")
         }
 
 

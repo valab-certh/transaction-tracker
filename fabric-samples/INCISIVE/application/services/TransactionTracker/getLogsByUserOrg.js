@@ -44,22 +44,11 @@ const getLogsByUserOrg = async(req, res, next) => {
 
         }
 
-        //check if the identity eixsts
-        // TODO: check if this is really needed
 
-        if (identity){
-
-            const exists = await wallet.get(identity);
-            if (exists) {
-                console.log('OK! Registered user!!!');
-            }
-            else{
-    
-                console.log('The user you requested does not exist.... Not registered user');
-                throw new Error('The user you requested does not exist')
-            }
+        if ((!identity && identity != "All")){
+            
+            throw new Error('Please type a username');
         }
-
 
         const gateway = new Gateway();
 
@@ -96,13 +85,18 @@ const getLogsByUserOrg = async(req, res, next) => {
 
         gateway.disconnect();
 
+        let logs = await retrieveByUserOrg(identity, orgJSON);
+
+        if (!(Array.isArray(logs) && logs.length)){
+
+            throw new Error('Non existent user or user has not yet performed any action.');
+        }
 
 
-        let logs = await retrieveByUserOrg(req.body.user, orgJSON);
         console.log("Logs to string ",logs)
         let logsjson = JSON.parse(JSON.stringify(logs));
         console.log("Log json",logsjson)
-        res.status(200).send(logsjson);
+        res.status(200).send({"Logs":logsjson});
         
         
     }
@@ -111,7 +105,7 @@ const getLogsByUserOrg = async(req, res, next) => {
 
         console.log('Get logs by user failed with error: '+error);
 
-        res.status(403).send('Get logs by user failed with error: '+error)
+        res.status(403).send('Get logs by user failed with: '+error)
         
 
     }

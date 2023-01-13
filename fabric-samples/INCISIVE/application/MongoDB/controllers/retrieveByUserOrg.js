@@ -9,7 +9,7 @@ const retrieveByUserOrg = async (username, org) => {
     var byuser ;
 
 
-    if (username){
+    if (username && username != "All"){
         console.log(username);
         byuser =  db.collection("logs").find({User: username, Organisation: org}).project({_id:0, __v:0});
 

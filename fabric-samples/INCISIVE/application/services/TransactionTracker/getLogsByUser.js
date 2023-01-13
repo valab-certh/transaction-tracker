@@ -10,11 +10,6 @@ const walletPath = path.join(__dirname, '..', '..', 'wallet');
 const {ccps, msps, caClients, cas} = require('../../helpers/initalization');
 const retrieveByUser= require('../../MongoDB/controllers/retrieveByUser');
 
-function prettyJSONString(inputString) {
-	return JSON.stringify(JSON.parse(inputString), null, 2);
-}
-
-
 
 // TODO: check if user is admin (probably), and see about the middleware
 const getLogsByUser = async(req, res, next) => {
@@ -31,33 +26,35 @@ const getLogsByUser = async(req, res, next) => {
         const wallet = await Wallets.newFileSystemWallet(path.join(walletPath, 'incisive'));
 
         //check if the identity eixsts
-        const requestoridentity = await wallet.get(requestor);
+        await wallet.get(requestor);
 
         // if user exists, check if user is an admin and hence can check the logs
-        if (requestoridentity) {
-            console.log('OK! Registered user!!!');
+        // if (requestoridentity) {
+        //     console.log('OK! Registered user!!!');
 
-        }
-        else{
+        // }
+        // else{
 
-            console.log('User identity does not exist in wallet.... Not registered user');
-            throw new Error('User identity does not exist in wallet.... Not registered user');
+        //     console.log('User identity does not exist in wallet.... Not registered user');
+        //     throw new Error('User identity does not exist in wallet.... Not registered user');
 
-        }
+        // }
 
         //check if the identity eixsts
         // TODO: check if this is really needed
-        if (identity){
-            const exists = await wallet.get(identity);
-            if (exists) {
-                console.log('OK! Registered user!!!');
-            }
-            else{
+        if ((!identity && identity != "All")){
+            // const exists = await wallet.get(identity);
+            // if (exists) {
+            //     console.log('OK! Registered user!!!');
+            // }
+            // else{
     
-                console.log('User identity does not exist in wallet.... Not registered user');
-                throw new Error('User identity does not exist in wallet.... Not registered user')
-            }
+            //     console.log('User identity does not exist in wallet.... Not registered user');
+            //     throw new Error('This user does not exist...')
+            // }
+            throw new Error('Please type a username')
         }
+
 
 
         const gateway = new Gateway();
@@ -65,7 +62,7 @@ const getLogsByUser = async(req, res, next) => {
         
         await gateway.connect(ccp, {
             wallet,
-            identity: requestoridentity,
+            identity: requestor,
             discovery: { enabled: true, asLocalhost: true } // using asLocalhost as this gateway is using a fabric network deployed locally
         });
         console.log("Connected!!!")
@@ -76,23 +73,28 @@ const getLogsByUser = async(req, res, next) => {
         // Get the contract from the network.
         const contract = network.getContract(chaincodeName, 'UserContract');
 
-        try {
-            await contract.evaluateTransaction('CheckRole', "ADMINISTRATOR");
-        }
+        // try {
+        await contract.evaluateTransaction('CheckRole', "ADMINISTRATOR");
+        // }
 
-        catch(err){
-            throw new Error("You don't have the necessary rights to perform this action")
-        }
+        // catch(err){
+        //     throw new Error("You don't have the necessary rights to perform this action")
+        // }
 
         gateway.disconnect();
 
 
 
-        let logs = await retrieveByUser(req.body.user);
+        let logs = await retrieveByUser(identity);
+
+        if (!(Array.isArray(logs) && logs.length)){
+
+            throw new Error('Non existent user or user has not yet performed any action.');
+        }
         console.log(logs.toString())
         let logsjson =JSON.parse(JSON.stringify(logs));
         console.log(logsjson)
-        res.status(200).send(logsjson);
+        res.status(200).send({"Logs":logsjson});
         
         
     }

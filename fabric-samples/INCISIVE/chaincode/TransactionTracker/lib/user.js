@@ -167,7 +167,7 @@ class UserContract extends Contract {
 
         if (role != role_to_check){
 
-            throw new Error("You don't have the necessary right to perform this action");
+            throw new Error("You don't have the necessary rights to perform this action");
         }
 
     }
