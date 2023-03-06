@@ -30,13 +30,16 @@ class UserContract extends Contract {
         const newaction = {
 
             ID: id,
-            UserRegistered:user,
             User: admin,
             Organisation: adminorg,
             Role:adminrole,
-            Date: timestamp.toDateString(),
-            Time: timestamp.toTimeString(),
-            Action: 'Register'
+            Date: new Date(timestamp),
+            Action: 'Register User',
+            UserRegistered:user,
+            Data: '-',
+            Query: '-',
+            ModelName: '-',
+            AIservice: '-'
 
         }
 
@@ -66,9 +69,13 @@ class UserContract extends Contract {
             User:user,
             Organisation: org,
             Role:role,
-            Date: timestamp.toDateString(),
-            Time: timestamp.toTimeString(),
-            Action: 'LogIn'
+            Date: new Date(timestamp),
+            Action: 'Log In',
+            UserRegistered: '-',
+            Data: '-',
+            Query: '-',
+            ModelName: '-',
+            AIservice: '-'
 
         }
 
@@ -100,9 +107,13 @@ class UserContract extends Contract {
             User:user,
             Organisation: org,
             Role:role,
-            Date: timestamp.toDateString(),
-            Time: timestamp.toTimeString(),
-            Action: 'LogOut'
+            Date: new Date(timestamp),
+            Action: 'Log Out',
+            UserRegistered: '-',
+            Data: '-',
+            Query: '-',
+            ModelName: '-',
+            AIservice: '-'
 
         }
         
@@ -132,9 +143,13 @@ class UserContract extends Contract {
             User:user,
             Organisation: org,
             Role:role,
-            Date: timestamp.toDateString(),
-            Time: timestamp.toTimeString(),
-            Action: 'Revoke user'
+            Date: new Date(timestamp),
+            Action: 'Revoke user',
+            UserRegistered: '-',
+            Data: '-',
+            Query: '-',
+            ModelName: '-',
+            AIservice: '-'
 
         }
         

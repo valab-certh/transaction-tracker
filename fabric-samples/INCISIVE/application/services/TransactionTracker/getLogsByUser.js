@@ -16,6 +16,10 @@ const getLogsByUser = async(req, res, next) => {
 
     const identity = req.body.user;
     const requestor = req.body.requestor;
+    let fromDate = req.body.fromDate;
+    let toDate = req.body.toDate;
+    let pageLength = req.body.pageLength;
+
 
 
     try {
@@ -28,34 +32,30 @@ const getLogsByUser = async(req, res, next) => {
         //check if the identity eixsts
         await wallet.get(requestor);
 
-        // if user exists, check if user is an admin and hence can check the logs
-        // if (requestoridentity) {
-        //     console.log('OK! Registered user!!!');
-
-        // }
-        // else{
-
-        //     console.log('User identity does not exist in wallet.... Not registered user');
-        //     throw new Error('User identity does not exist in wallet.... Not registered user');
-
-        // }
-
         //check if the identity eixsts
         // TODO: check if this is really needed
-        if ((!identity && identity != "All")){
-            // const exists = await wallet.get(identity);
-            // if (exists) {
-            //     console.log('OK! Registered user!!!');
-            // }
-            // else{
-    
-            //     console.log('User identity does not exist in wallet.... Not registered user');
-            //     throw new Error('This user does not exist...')
-            // }
+        if ((!identity && (identity != "all" || identity != "All" || identity != "ALL"))){
+
             throw new Error('Please type a username')
         }
 
+        if ((identity != "all" && identity != "All" && identity != "ALL")) {
 
+            try {
+
+                await wallet.get(identity);
+            }
+
+            catch(error){
+
+                throw new Error('User does not exist');
+            }
+        }
+
+        if(new Date(fromDate) > new Date(toDate)){
+
+            throw new Error ("Please pick a correct date");
+        }
 
         const gateway = new Gateway();
         console.log("Trying to connect to gateway...")
@@ -73,28 +73,25 @@ const getLogsByUser = async(req, res, next) => {
         // Get the contract from the network.
         const contract = network.getContract(chaincodeName, 'UserContract');
 
-        // try {
-        await contract.evaluateTransaction('CheckRole', "ADMINISTRATOR");
-        // }
 
-        // catch(err){
-        //     throw new Error("You don't have the necessary rights to perform this action")
-        // }
+        await contract.evaluateTransaction('CheckRole', "ADMINISTRATOR");
 
         gateway.disconnect();
 
 
 
-        let logs = await retrieveByUser(identity);
+        let logs = await retrieveByUser(identity, fromDate, toDate);
 
-        if (!(Array.isArray(logs) && logs.length)){
+        // if (!(Array.isArray(logs) && logs.length)){
 
-            throw new Error('Non existent user or user has not yet performed any action.');
-        }
+        //     throw new Error('User has not yet performed any action.');
+        // }
         console.log(logs.toString())
-        let logsjson =JSON.parse(JSON.stringify(logs));
+        let logsjson = JSON.parse(JSON.stringify(logs));
         console.log(logsjson)
-        res.status(200).send({"Logs":logsjson});
+
+
+        res.status(200).send({"Logs":logsjson, "PageLength": pageLength, "TotalNumber": logs.length});
         
         
     }
@@ -103,7 +100,7 @@ const getLogsByUser = async(req, res, next) => {
 
         console.log('Get logs by user failed with error: '+error);
 
-        res.status(403).send('Get logs by user failed with : '+error)
+        res.status(403).send({"Error":'Get logs by user failed with : '+error})
         
 
     }

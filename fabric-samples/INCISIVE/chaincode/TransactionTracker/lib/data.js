@@ -31,10 +31,13 @@ class DataContract extends Contract {
             User:actor,
             Organisation:actor,
             Role: "Data Provider",
-            Date: timestamp.toDateString(),
-            Time: timestamp.toTimeString(),
+            Date: new Date(timestamp),
             Action: 'Upload data',
-            Data: data_id
+            UserRegistered: '-',
+            Data: data_id,
+            Query: '-',
+            ModelName: '-',
+            AIservice: '-'
 
         }
 
@@ -84,10 +87,13 @@ class DataContract extends Contract {
             User:actor,
             Organisation:org,
             Role: role,
-            Date: timestamp.toDateString(),
-            Time: timestamp.toTimeString(),
+            Date: new Date(timestamp),
             Action: 'Delete data',
-            Data: data
+            UserRegistered: '-',
+            Data: data,
+            Query: '-',
+            ModelName: '-',
+            AIservice: '-'
 
         }
 
@@ -104,7 +110,7 @@ class DataContract extends Contract {
  
 
     // deidentification action on data recorded on ledger (world state)
-    async Deidentify(ctx, data, actor, secret) {
+    async Deidentify(ctx, actor, secret) {
 
         let id = ctx.stub.getTxID();
         // let timestamp = ctx.stub.getTxTimestamp();
@@ -121,9 +127,13 @@ class DataContract extends Contract {
             User:actor,
             Organisation:org,
             Role: role,
-            Date: timestamp.toDateString(),
-            Time: timestamp.toTimeString(),
-            Action: 'Deidentify data'
+            Date: new Date(timestamp),
+            Action: 'Deidentify data',
+            UserRegistered: '-',
+            Data: '-',
+            Query: '-',
+            ModelName: '-',
+            AIservice: '-'
 
         }
 
@@ -139,7 +149,7 @@ class DataContract extends Contract {
 
 
     // annotation action on data recorded on ledger (world state)
-    async Annotate(ctx, data, actor, secret) {
+    async Annotate(ctx, actor, secret) {
 
         let id = ctx.stub.getTxID();
         let timestamp = ctx.stub.getDateTimestamp();
@@ -154,9 +164,13 @@ class DataContract extends Contract {
             User:actor,
             Organisation:org,
             Role: role,
-            Date: timestamp.toDateString(),
-            Time: timestamp.toTimeString(),
-            Action: 'Annotate'
+            Date: new Date(timestamp),
+            Action: 'Annotate',
+            UserRegistered: '-',
+            Data: '-',
+            Query: '-',
+            ModelName: '-',
+            AIservice: '-'
 
         }
 
@@ -189,10 +203,13 @@ class DataContract extends Contract {
             User:actor,
             Organisation:org,
             Role: role,
-            Date: timestamp.toDateString(),
-            Time: timestamp.toTimeString(),
+            Date: new Date(timestamp),
             Action: 'Annotate data using AI algorithms',
-            Data: data
+            UserRegistered: '-',
+            Data: data,
+            Query: '-',
+            ModelName: '-',
+            AIservice: '-'
 
         }
 
@@ -209,7 +226,7 @@ class DataContract extends Contract {
 
 
     // quality check of data action on data recorded on ledger (world state)
-    async QualityCheck (ctx, data, actor, secret) {
+    async QualityCheck (ctx, actor, secret) {
 
         let id = ctx.stub.getTxID();
         let timestamp = ctx.stub.getDateTimestamp();
@@ -224,9 +241,13 @@ class DataContract extends Contract {
             User:actor,
             Organisation:org,
             Role: role,
-            Date: timestamp.toDateString(),
-            Time: timestamp.toTimeString(),
-            Action: 'Data Quality Check'
+            Date: new Date(timestamp),
+            Action: 'Data Quality Check',
+            UserRegistered: '-',
+            Data: '-',
+            Query: '-',
+            ModelName: '-',
+            AIservice: '-'
 
         }
 
@@ -259,10 +280,13 @@ class DataContract extends Contract {
             User:actor,
             Organisation:org,
             Role: role,
-            Date: timestamp.toDateString(),
-            Time: timestamp.toTimeString(),
+            Date: new Date(timestamp),
             Action: 'Search for data',
-            Query: JSON.parse(query)
+            UserRegistered: '-',
+            Data: '-',
+            Query: JSON.parse(query),
+            ModelName: '-',
+            AIservice: '-'
 
         }
 
@@ -296,7 +320,11 @@ class DataContract extends Contract {
         Date: timestamp.toDateString(),
         Time: timestamp.toTimeString(),
         Action: 'Returned data',
-        Data: data
+        UserRegistered: '-',
+        Data: data,
+        Query: '-',
+        ModelName: '-',
+        AIservice: '-'
 
     }
 
@@ -330,7 +358,11 @@ class DataContract extends Contract {
         Date: timestamp.toDateString(),
         Time: timestamp.toTimeString(),
         Action: 'Choose data',
-        Data: data
+        UserRegistered: '-',
+        Data: data,
+        Query: '-',
+        ModelName: '-',
+        AIservice: '-'
 
     }
 
@@ -367,10 +399,13 @@ class DataContract extends Contract {
             User:user,
             Organisation:org,
             Role: role,
-            Date: timestamp.toDateString(),
-            Time: timestamp.toTimeString(),
+            Date: new Date(timestamp),
             Action: 'View data',
-            Data: data_id
+            UserRegistered: '-',
+            Data: data_id,
+            Query: '-',
+            ModelName: '-',
+            AIservice: '-'
 
         }
 

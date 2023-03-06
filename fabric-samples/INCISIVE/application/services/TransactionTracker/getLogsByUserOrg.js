@@ -21,6 +21,9 @@ const getLogsByUserOrg = async(req, res, next) => {
 
     const identity = req.body.user;
     const requestor = req.body.requestor;
+    let fromDate = req.body.fromDate;
+    let toDate = req.body.toDate;
+    let pageLength = req.body.pageLength;
 
 
     try {
@@ -45,9 +48,28 @@ const getLogsByUserOrg = async(req, res, next) => {
         }
 
 
-        if ((!identity && identity != "All")){
+        if ((!identity && (identity != "all" || identity != "All" || identity != "ALL"))){
             
             throw new Error('Please type a username');
+        }
+
+        if ((identity != "all" && identity != "All" && identity != "ALL")) {
+            console.log("I'M IN")
+
+            try {
+
+                await wallet.get(identity);
+            }
+
+            catch(error){
+
+                throw new Error('User does not exist');
+            }
+        }
+
+        if(new Date(fromDate) > new Date(toDate)){
+
+            throw new Error ("Please pick a correct date");
         }
 
         const gateway = new Gateway();
@@ -85,18 +107,20 @@ const getLogsByUserOrg = async(req, res, next) => {
 
         gateway.disconnect();
 
-        let logs = await retrieveByUserOrg(identity, orgJSON);
+        let logs = await retrieveByUserOrg(identity, orgJSON, fromDate, toDate);
 
-        if (!(Array.isArray(logs) && logs.length)){
+        // if (!(Array.isArray(logs) && logs.length)){
 
-            throw new Error('Non existent user or user has not yet performed any action.');
-        }
+        //     throw new Error('User has not yet performed any action.');
+        // }
 
 
         console.log("Logs to string ",logs)
         let logsjson = JSON.parse(JSON.stringify(logs));
         console.log("Log json",logsjson)
-        res.status(200).send({"Logs":logsjson});
+
+
+        res.status(200).send({"Logs":logsjson, "PageLength": pageLength, "TotalNumber": logs.length});
         
         
     }
@@ -105,9 +129,7 @@ const getLogsByUserOrg = async(req, res, next) => {
 
         console.log('Get logs by user failed with error: '+error);
 
-        res.status(403).send('Get logs by user failed with: '+error)
-        
-
+        res.status(403).send({"Error":'Get logs by user failed with: '+error})
     }
     
 }

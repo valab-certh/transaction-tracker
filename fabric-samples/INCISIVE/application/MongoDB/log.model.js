@@ -17,11 +17,6 @@ var logSchema = mongoose.Schema({
         required: true
     },
 
-    UserRegistered: {
-        type:Object,
-        required: false
-    },
-
     User: {
         type:Object,
         required: true
@@ -38,14 +33,14 @@ var logSchema = mongoose.Schema({
     },
 
     Date: {
-        type:Object,
+        type:Date,
         required: true
     },
 
-    Time: {
-        type:Object,
-        required: true
-    },
+    // Time: {
+    //     type:Object,
+    //     required: true
+    // },
 
 
     Action: {
@@ -53,24 +48,30 @@ var logSchema = mongoose.Schema({
         required: true
     },
 
+
+    UserRegistered: {
+        type:Object,
+        required: true
+    },
+
     Data: {
         type:Object,
-        required: false
+        required: true
     },
 
     Query: {
         type:Object,
-        required: false
+        required: true
     },
 
     ModelName: {
         type:Object,
-        required: false
+        required: true
     },
 
     AIservice: {
         type:Object,
-        required: false
+        required: true
     }
 
 })

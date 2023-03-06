@@ -33,11 +33,13 @@ class AIContract extends Contract {
             User:actor,
             Organisation:org,
             Role: role,
-            Date: timestamp.toDateString(),
-            Time: timestamp.toTimeString(),
+            Date: new Date(timestamp),
             Action: 'Train Model',
+            UserRegistered: '-',
             Data: data,
-            ModelName: modelname
+            Query: '-',
+            ModelName: modelname,
+            AIservice: '-'
 
         }
 
@@ -67,11 +69,14 @@ class AIContract extends Contract {
             User:actor,
             Organisation:org,
             Role: role,
-            Date: timestamp.toDateString(),
-            Time: timestamp.toTimeString(),
+            Date: new Date(timestamp),
             Action: "Use AI service",
+            UserRegistered: '-',
             Data: data,
-            AIservice:service
+            Query: '-',
+            ModelName: '-',
+            AIservice:service,
+ 
 
         }
 

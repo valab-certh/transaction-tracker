@@ -21,7 +21,6 @@ const deidentify = async(req, res, next) => {
 
     //should be given by request or taken from a token (e.g. jwt)
     const identity = req.body.user;
-    let data = req.body.data;
     console.log(req.body)
 
 
@@ -75,7 +74,7 @@ const deidentify = async(req, res, next) => {
             //let timestamp = Date.now();
 
             console.log('\n--> Submit Transaction: InitLedger, function creates the initial set of assets on the ledger');
-            let result = await contract.submitTransaction('Deidentify', data, identity, secret);
+            let result = await contract.submitTransaction('Deidentify',identity, secret);
 
             console.log('*** Result: committed');
             let resultjson = JSON.parse(result.toString());

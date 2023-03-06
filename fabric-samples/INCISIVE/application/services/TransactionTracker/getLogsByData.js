@@ -23,6 +23,9 @@ const getLogsByData = async(req, res, next) => {
 
     const data_id = req.body.data_id;
     const requestor = req.body.user;
+    let fromDate = req.body.fromDate;
+    let toDate = req.body.toDate;
+    let pageLength = req.body.pageLength;
 
 
     try {
@@ -72,7 +75,7 @@ const getLogsByData = async(req, res, next) => {
         // 3) When no data is provided, it returnes an error
 
         //  Case 1): data_id is provided
-        if (data_id && data_id != "All"){
+        if (data_id && (data_id != "all" && data_id != "All" && data_id != "ALL")){
 
             try{
             await contract.evaluateTransaction('CheckDataLogs', data_id);
@@ -84,21 +87,21 @@ const getLogsByData = async(req, res, next) => {
     
             }
 
-            let logs = await retrieveByData([data_id]);
+            let logs = await retrieveByData([data_id], fromDate, toDate);
 
-            if (!(Array.isArray(logs) && logs.length)){
+            // if (!(Array.isArray(logs) && logs.length)){
 
-                throw new Error('Non existent data or data has not yet performed any action.');
-            }
+            //     throw new Error('Non existent data or data has not yet performed any action.');
+            // }
             console.log(logs.toString())
             let logsjson = JSON.parse(JSON.stringify(logs));
             console.log(logsjson)
-            res.status(200).send({"Logs":logsjson});
+            res.status(200).send({"Logs":logsjson, "PageLength": pageLength, "TotalNumber": logs.length});
 
         }
 
         // Case 2): data_id is All
-        else if (data_id == "All"){
+        else if ((data_id == "all" || data_id == "All" || data_id == "ALL")){
 
             console.log('\n--> Evaluate Transaction: GetDataset, function retieves info about a specific dataset');
             let result = await contract.evaluateTransaction('GetDatasetOrg');
@@ -116,15 +119,15 @@ const getLogsByData = async(req, res, next) => {
                 datasetarray.push(resultJSON[i].Key)
             }
 
-            let logs = await retrieveByData(datasetarray);
-            if (!(Array.isArray(logs) && logs.length)){
+            let logs = await retrieveByData(datasetarray, fromDate, toDate);
+            // if (!(Array.isArray(logs) && logs.length)){
 
-                throw new Error('Non existent data or data has not yet performed any action.');
-            }
+            //     throw new Error('Non existent data or data has not yet performed any action.');
+            // }
             console.log(logs.toString())
             let logsjson = JSON.parse(JSON.stringify(logs));
             console.log(logsjson)
-            res.status(200).send({"Logs":logsjson});
+            res.status(200).send({"Logs":logsjson, "PageLength": pageLength, "TotalNumber": logs.length});
 
 
         }
@@ -146,7 +149,7 @@ const getLogsByData = async(req, res, next) => {
 
         console.log('Get logs by data failed with error: '+error);
 
-        res.status(403).send('Get logs by data failed with : '+error)
+        res.status(403).send({"Error":'Get logs by data failed with : '+error})
         
 
     }
