@@ -8,6 +8,7 @@ const insertlog = async (hash, log) => {
     let newlog;
     console.log("Log is ", log)
     console.log("User ", log.User)
+    console.log("Date ", log.Date)
     console.log(typeof(log))
 
 

@@ -18,7 +18,10 @@ const getLogsByUser = async(req, res, next) => {
     const requestor = req.body.requestor;
     let fromDate = req.body.fromDate;
     let toDate = req.body.toDate;
-    let pageLength = req.body.pageLength;
+    let pageLength = + req.body.pageLength;
+    // const pageSize = + req.query.pageSize;
+    // const pageSize = 10;
+    let currentPage = + req.body.currentPage;
 
 
 
@@ -41,15 +44,17 @@ const getLogsByUser = async(req, res, next) => {
 
         if ((identity != "all" && identity != "All" && identity != "ALL")) {
 
-            try {
+        //     try {
+                
 
                 await wallet.get(identity);
-            }
+        //         console.log("IDEINTITY is", identity)
+        //     }
 
-            catch(error){
+        //     catch(error){
 
-                throw new Error('User does not exist');
-            }
+        //         throw new Error('User does not exist');
+        //     }
         }
 
         if(new Date(fromDate) > new Date(toDate)){
@@ -79,19 +84,20 @@ const getLogsByUser = async(req, res, next) => {
         gateway.disconnect();
 
 
+        //PAGINATION
+        // let logs = await retrieveByUser(identity, fromDate, toDate, pageSize, currentPage);
 
-        let logs = await retrieveByUser(identity, fromDate, toDate);
-
+        let logs = await retrieveByUser(identity, fromDate, toDate, pageLength, currentPage);
         // if (!(Array.isArray(logs) && logs.length)){
 
         //     throw new Error('User has not yet performed any action.');
         // }
-        console.log(logs.toString())
-        let logsjson = JSON.parse(JSON.stringify(logs));
+        
+        let logsjson = JSON.parse(JSON.stringify(logs["logsPage"]));
         console.log(logsjson)
 
 
-        res.status(200).send({"Logs":logsjson, "PageLength": pageLength, "TotalNumber": logs.length});
+        res.status(200).send({"Logs":logsjson, "PageLength": pageLength, "TotalNumber": logs["Length"], "CurrentPage": currentPage });
         
         
     }

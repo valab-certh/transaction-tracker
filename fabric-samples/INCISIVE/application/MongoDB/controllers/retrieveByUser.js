@@ -2,34 +2,35 @@ const mongoose = require('mongoose');
 const db = mongoose.connection;
 
 
-const retrieveByUser = async (username, fromDate, toDate) => {
+// const retrieveByUser = async (username, fromDate, toDate, pageSize, currentPage) => {
+    const retrieveByUser = async (username, fromDate, toDate, pageSize, currentPage) => {
 
-    var byuser;
+    var byuserPage;
+    var logsLength;
 
     fromDate = new Date (fromDate);
     toDate = new Date(toDate);
 
-        //  if same day change time to include whole day
-    if (fromDate == toDate){
-
-        toDate.setUTCHours(23,59,59,999);
-    }
+    toDate.setUTCHours(23,59,59,999);
 
     if (username && (username != "all" && username != "All" && username != "ALL")){
 
-        byuser =  db.collection("logs").find({User: username, Date:{$gte: fromDate, $lt: toDate}}).project({_id:0, __v:0});
+        logsLength = db.collection("logs").countDocuments({User: username, Date:{$gte: fromDate, $lt: toDate}});  
+        byuserPage = db.collection("logs").find({User: username, Date:{$gte: fromDate, $lt: toDate}}).project({_id:0, __v:0}).skip(pageSize * (currentPage-1)) .limit(pageSize);
+
     }
 
     else {
+        logsLength = db.collection("logs").countDocuments({ Date:{$gte: fromDate, $lte: toDate}});
+        byuserPage = db.collection("logs").find({ Date:{$gte: fromDate, $lte: toDate}}).project({_id:0, __v:0}).skip(pageSize * (currentPage-1)).limit(pageSize);
 
-        byuser =  db.collection("logs").find({ Date:{$gte: fromDate, $lte: toDate}}).project({_id:0, __v:0});
     }
 
-   
 
-    let logs = await byuser.toArray();
-
-    return logs
+    byuserPage = await byuserPage.toArray();
+    logsLength = + (await logsLength).toString();
+    
+    return {"Length":logsLength, "logsPage": byuserPage}
 }
 
 module.exports = retrieveByUser;

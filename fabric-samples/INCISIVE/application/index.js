@@ -83,14 +83,16 @@ app.post('/tracker/qualitycheck', keyverification, qualitycheck);
 
 app.post('/tracker/viewdata', keyverification, viewData)
 
-app.post('/tracker/aiservice', keyverification, AIservice); // to be integrated
+// app.post('/tracker/aiservice', keyverification, AIservice); // to be integrated
+app.post('/tracker/aiservice',keyverification, AIservice); // to be integrated
 
 app.post('/tracker/trainmodel', keyverification, trainmodel); // to be integrated
 
 
 // AUDITING MECHANISM
 
-app.get('/tracker/getlogsbyuser', keyverification, getLogsByUser);
+// app.get('/tracker/getlogsbyuser', keyverification, getLogsByUser);
+app.get('/tracker/getlogsbyuser',keyverification, getLogsByUser);
 
 app.get('/tracker/getlogsbyuserorg', keyverification, getLogsByUserOrg);
 
