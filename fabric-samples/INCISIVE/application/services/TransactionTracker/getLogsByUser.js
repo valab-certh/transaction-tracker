@@ -19,8 +19,6 @@ const getLogsByUser = async(req, res, next) => {
     let fromDate = req.body.fromDate;
     let toDate = req.body.toDate;
     let pageLength = + req.body.pageLength;
-    // const pageSize = + req.query.pageSize;
-    // const pageSize = 10;
     let currentPage = + req.body.currentPage;
 
 

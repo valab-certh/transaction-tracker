@@ -23,8 +23,8 @@ const getLogsByUserOrg = async(req, res, next) => {
     const requestor = req.body.requestor;
     let fromDate = req.body.fromDate;
     let toDate = req.body.toDate;
-    let pageLength = req.body.pageLength;
-
+    let pageLength = + req.body.pageLength;
+    let currentPage = + req.body.currentPage;
 
     try {
 
@@ -107,7 +107,7 @@ const getLogsByUserOrg = async(req, res, next) => {
 
         gateway.disconnect();
 
-        let logs = await retrieveByUserOrg(identity, orgJSON, fromDate, toDate);
+        let logs = await retrieveByUserOrg(identity, orgJSON, fromDate, toDate, pageLength, currentPage);
 
         // if (!(Array.isArray(logs) && logs.length)){
 
@@ -116,11 +116,11 @@ const getLogsByUserOrg = async(req, res, next) => {
 
 
         console.log("Logs to string ",logs)
-        let logsjson = JSON.parse(JSON.stringify(logs));
-        console.log("Log json",logsjson)
+        let logsjson = JSON.parse(JSON.stringify(logs["logsPage"]));
+        console.log(logsjson)
 
 
-        res.status(200).send({"Logs":logsjson, "PageLength": pageLength, "TotalNumber": logs.length});
+        res.status(200).send({"Logs":logsjson, "PageLength": pageLength, "TotalNumber": logs["Length"], "CurrentPage": currentPage });
         
         
     }

@@ -25,7 +25,8 @@ const getLogsByData = async(req, res, next) => {
     const requestor = req.body.user;
     let fromDate = req.body.fromDate;
     let toDate = req.body.toDate;
-    let pageLength = req.body.pageLength;
+    let pageLength = + req.body.pageLength;
+    let currentPage = + req.body.currentPage;
 
 
     try {
@@ -87,16 +88,15 @@ const getLogsByData = async(req, res, next) => {
     
             }
 
-            let logs = await retrieveByData([data_id], fromDate, toDate);
+            let logs = await retrieveByData([data_id], fromDate, toDate, pageLength, currentPage);
 
             // if (!(Array.isArray(logs) && logs.length)){
 
             //     throw new Error('Non existent data or data has not yet performed any action.');
             // }
-            console.log(logs.toString())
-            let logsjson = JSON.parse(JSON.stringify(logs));
+            let logsjson = JSON.parse(JSON.stringify(logs["logsPage"]));
             console.log(logsjson)
-            res.status(200).send({"Logs":logsjson, "PageLength": pageLength, "TotalNumber": logs.length});
+            res.status(200).send({"Logs":logsjson, "PageLength": pageLength, "TotalNumber": logs["Length"], "CurrentPage": currentPage});
 
         }
 
@@ -119,15 +119,15 @@ const getLogsByData = async(req, res, next) => {
                 datasetarray.push(resultJSON[i].Key)
             }
 
-            let logs = await retrieveByData(datasetarray, fromDate, toDate);
+            let logs = await retrieveByData(datasetarray, fromDate, toDate, pageLength, currentPage);
             // if (!(Array.isArray(logs) && logs.length)){
 
             //     throw new Error('Non existent data or data has not yet performed any action.');
             // }
-            console.log(logs.toString())
-            let logsjson = JSON.parse(JSON.stringify(logs));
+            let logsjson = JSON.parse(JSON.stringify(logs["logsPage"]));
             console.log(logsjson)
-            res.status(200).send({"Logs":logsjson, "PageLength": pageLength, "TotalNumber": logs.length});
+            
+            res.status(200).send({"Logs":logsjson, "PageLength": pageLength, "TotalNumber": logs["Length"], "CurrentPage": currentPage});
 
 
         }
