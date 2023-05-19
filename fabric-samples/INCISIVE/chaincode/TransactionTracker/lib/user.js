@@ -225,7 +225,15 @@ class UserContract extends Contract {
 
 
 
+    async WriteFailedTx(ctx, hash, log){
 
+        let failedlog = JSON.parse(log);
+        // failedlog['FaileTx'] = true;
+
+        ctx.stub.putState(hash, Buffer.from(stringify(failedlog)));
+
+        return failedlog;
+    }
 
     
 }

@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Log = require('../log.model');
+const writeFailedTx = require('./writeFailedTx');
 
 
 
@@ -34,23 +35,15 @@ const insertlog = async (hash, log) => {
             });
         
  
-    }
-    catch(err){
 
-        console.log(err);
-
-        return err;
-    }
-
-    try {
         await newlog.save();
 
     }
 
     catch(err){
 
-        console.log(err);
-        return err;
+        let failedTx = await writeFailedTx(hash, log);
+        throw new Error(`Mongo Error: ${err}... Log ${JSON.stringify(failedTx)} saved on ledger.`)
 
     }
 
