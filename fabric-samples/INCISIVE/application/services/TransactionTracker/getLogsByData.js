@@ -73,18 +73,20 @@ const getLogsByData = async(req, res, next) => {
         // 1) When data is provided as an argument, then the logs containing the specific dataset are returned
         // 2) When the "All" argument is provided, we consider that the user wants all data, so the logs containg either one of the data
         // belonging to this organization are returned
-        // 3) When no data is provided, it returnes an error
+        // 3) When no data is provided, it returns an error
 
         //  Case 1): data_id is provided
-        if (data_id && (data_id != "all" && data_id != "All" && data_id != "ALL")){
+        //&& (data_id != "all" && data_id != "All" && data_id != "ALL")
+        if (data_id ){
 
             try{
-            await contract.evaluateTransaction('CheckDataLogs', data_id);
+            let result  = await contract.evaluateTransaction('CheckDataPermissions', data_id);
+            console.log(JSON.parse(result))
 
             }
             catch(err){
     
-                throw new Error("You are not allowed to perform this action or data don't belong to your organization")
+                throw new Error(err)
     
             }
 
@@ -101,7 +103,8 @@ const getLogsByData = async(req, res, next) => {
         }
 
         // Case 2): data_id is All
-        else if ((data_id == "all" || data_id == "All" || data_id == "ALL")){
+        else {
+        // else if ((data_id == "all" || data_id == "All" || data_id == "ALL")){
 
             console.log('\n--> Evaluate Transaction: GetDataset, function retieves info about a specific dataset');
             let result = await contract.evaluateTransaction('GetDatasetOrg');
@@ -132,11 +135,11 @@ const getLogsByData = async(req, res, next) => {
 
         }
 
-        // Case 3) no input is provided
-        else {
+        // // Case 3) no input is provided
+        // else {
 
-            throw new Error("Please select a data to see the logs for.")
-        }
+        //     // throw new Error("Please select a data to see the logs for.")
+        // }
 
 
         

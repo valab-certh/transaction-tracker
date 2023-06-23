@@ -181,8 +181,8 @@ class DatasetsContract extends Contract {
 
 
 
-    // CheckDataLogs checks if a user can check the logs based on specific data
-    async CheckDataLogs(ctx, data){
+    // CheckDataPermission checks if a user can check the logs based on specific data
+    async CheckDataPermissions(ctx, data_id){
 
         let role = ctx.clientIdentity.getAttributeValue('role');
 
@@ -194,16 +194,23 @@ class DatasetsContract extends Contract {
         let org = ctx.clientIdentity.getAttributeValue('org');
 
         // let dataorg = await new Datasets().GetDataProvider(ctx, data);
-        let dataorg = await this.GetDataProvider(ctx,data); //invoke func from another CC
-        
+        // let dataorg = await this.GetDataProvider(ctx,data); //invoke func from another CC
 
-        if (!(org == dataorg)){
+        const data = await this.GetDataset(ctx,data_id);
+        let dataJSON = JSON.parse(data);
+        
+        if ( !dataJSON || dataJSON.length ==0 ){
+
+            throw new Error (`The dataset ${data_id} does not exist.`);
+        }
+        
+        if (!(org == dataJSON.DataProvider)){
 
             throw new Error("You are not allowed to check information about data that don't belong to your organization.");
         }
 
-        return (org == dataorg);
-
+        
+        return JSON.stringify(dataJSON.DataProvider);
 
 
     }

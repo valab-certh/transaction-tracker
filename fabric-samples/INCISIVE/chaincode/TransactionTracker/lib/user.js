@@ -188,6 +188,43 @@ class UserContract extends Contract {
     }
 
 
+    // GetRole Org is used to retrive the role and organization attribute of the user
+    async GetRoleOrg(ctx){
+
+        let role = ctx.clientIdentity.getAttributeValue('role');
+        let org = ctx.clientIdentity.getAttributeValue('org');
+        let infoJSON = {}
+
+        if (role == "ADMINISTRATOR"){
+
+            infoJSON = {
+
+                Role: role,
+                Organization: org
+            }
+
+        }
+
+        else if (role == "ORGANIZATION_ADMINISTRATOR"){
+
+            infoJSON = {
+
+                Role: role,
+                Organization: org
+            }
+
+        }
+
+        else {
+            throw new Error("You don't have the necessary rights to perform this action");
+        }
+
+        return JSON.stringify(infoJSON);
+    }
+
+    
+
+
     // GetOrganisation fetched the user's(invoker's) role
     async GetOrg(ctx){
 

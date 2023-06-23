@@ -3,12 +3,11 @@ require ('dotenv').config();
 const { Gateway, Wallets } = require('fabric-network');
 
 const path = require('path');
-const fs = require('fs');
 const { registerAndEnrollUser } = require('../../App Utils/CAUtil.js');
 const insertlog = require('../../MongoDB/controllers/insertlog');
 
 const {ccps, msps, caClients, cas} = require('../../helpers/initalization');
-const { IdentityService } = require('fabric-ca-client');
+
 
 const walletPath = path.join(__dirname, '..', '..', 'wallet');
 const channelName = process.env.CHANNEL_NAME;

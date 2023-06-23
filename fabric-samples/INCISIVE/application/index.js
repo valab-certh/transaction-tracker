@@ -92,11 +92,11 @@ app.post('/tracker/trainmodel', keyverification, trainmodel); // to be integrate
 // AUDITING MECHANISM
 
 // app.get('/tracker/getlogsbyuser', keyverification, getLogsByUser);
-app.get('/tracker/getlogsbyuser',keyverification, getLogsByUser);
+app.get('/tracker/getlogsbyuser', keyverification, getLogsByUser);
 
-app.get('/tracker/getlogsbyuserorg', keyverification, getLogsByUserOrg);
+// app.get('/tracker/getlogsbyuserorg', keyverification, getLogsByUserOrg);
 
-app.get('/tracker/getlogsbydata', keyverification, getLogsByData);
+app.get('/tracker/getlogsbydata',  keyverification, getLogsByData);
 
 app.get('/tracker/getdatainfo',  keyverification,getDataInfo);
 

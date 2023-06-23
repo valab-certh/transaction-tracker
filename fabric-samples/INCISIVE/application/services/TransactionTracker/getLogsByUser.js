@@ -9,6 +9,7 @@ const walletPath = path.join(__dirname, '..', '..', 'wallet');
 // const makeccp = require('../helpers/makeccp');
 const {ccps, msps, caClients, cas} = require('../../helpers/initalization');
 const retrieveByUser= require('../../MongoDB/controllers/retrieveByUser');
+const retrieveByUserOrg = require('../../MongoDB/controllers/retrieveByUserOrg');
 
 
 // TODO: check if user is admin (probably), and see about the middleware
@@ -20,6 +21,8 @@ const getLogsByUser = async(req, res, next) => {
     let toDate = req.body.toDate;
     let pageLength = + req.body.pageLength;
     let currentPage = + req.body.currentPage;
+
+    let logs;
 
 
 
@@ -42,17 +45,8 @@ const getLogsByUser = async(req, res, next) => {
 
         if ((identity != "all" && identity != "All" && identity != "ALL")) {
 
-        //     try {
-                
+            await wallet.get(identity);
 
-                await wallet.get(identity);
-        //         console.log("IDEINTITY is", identity)
-        //     }
-
-        //     catch(error){
-
-        //         throw new Error('User does not exist');
-        //     }
         }
 
         if(new Date(fromDate) > new Date(toDate)){
@@ -77,19 +71,28 @@ const getLogsByUser = async(req, res, next) => {
         const contract = network.getContract(chaincodeName, 'UserContract');
 
 
-        await contract.evaluateTransaction('CheckRole', "ADMINISTRATOR");
+       let userInfo = await contract.evaluateTransaction('GetRoleOrg');
 
-        gateway.disconnect();
+       gateway.disconnect();
 
+       let userInfoJSON = JSON.parse(userInfo);
+       console.log ("JSON is", userInfoJSON)
 
-        //PAGINATION
-        // let logs = await retrieveByUser(identity, fromDate, toDate, pageSize, currentPage);
+        if (userInfoJSON.Role == "ADMINISTRATOR") {
 
-        let logs = await retrieveByUser(identity, fromDate, toDate, pageLength, currentPage);
-        // if (!(Array.isArray(logs) && logs.length)){
+            logs = await retrieveByUser(identity, fromDate, toDate, pageLength, currentPage);
+        }
 
-        //     throw new Error('User has not yet performed any action.');
-        // }
+        else if (userInfoJSON.Role == "ORGANIZATION_ADMINISTRATOR"){
+
+            logs = await retrieveByUserOrg(identity, userInfoJSON.Organization, fromDate, toDate, pageLength, currentPage);
+        }
+        else {
+
+            throw new Error ("Something went wrong...")
+        }
+        
+
         
         let logsjson = JSON.parse(JSON.stringify(logs["logsPage"]));
         console.log(logsjson)
