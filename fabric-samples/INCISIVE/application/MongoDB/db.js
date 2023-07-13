@@ -1,9 +1,11 @@
 const mongoose = require('mongoose');
+const user = process.env.MONGO_USER;
+const pass = process.env.MONGO_PASS;
 
 
 const connect = (uri) => {
 
-    mongoose.connect(uri, {useNewUrlParser: true})
+    mongoose.connect(uri, {useNewUrlParser: true, auth:{username:user, password: pass}})
 
 
     //CONNECTION EVENTS

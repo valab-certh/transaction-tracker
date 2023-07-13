@@ -33,6 +33,10 @@ const getLogsByUser = require('./services/TransactionTracker/getLogsByUser');
 const getLogsByUserOrg = require('./services/TransactionTracker/getLogsByUserOrg');
 const getLogsByData = require('./services/TransactionTracker/getLogsByData');
 
+const registerModel = require('./services/Reputation/registerModel');
+const getModelInfo = require('./services/Reputation/getModelInfo');
+const voteReputation = require('./services/Reputation/voteReputation');
+
 
 const {keyverification} = require('./services/verifykey/keyverification');
 
@@ -57,11 +61,11 @@ app.use(cors(corsOptions));
 // app.use(keyverification);
 
 //endpoint for registartion of a user
-app.post('/tracker/register', keyverification, regenrolluser1); //integrated
+app.post('/tracker/register', regenrolluser1); //integrated
 
 app.post('/tracker/removeuser', keyverification, revokeuser);
 
-app.post('/tracker/login', keyverification, login); //integrated
+app.post('/tracker/login',  keyverification, login); //integrated
 
 app.post('/tracker/logout', keyverification, logout); //integrated
 
@@ -102,6 +106,14 @@ app.get('/tracker/getdatainfo',  keyverification,getDataInfo);
 
 app.get('/tracker/getalldataorg', keyverification, getAllDataOrg);
 
+
+// XAI MODEL REPUTATION
+
+app.post('/tracker/reputation/registermodel', keyverification, registerModel);
+
+app.get('/tracker/reputation/getmodelinfo', keyverification, getModelInfo);
+
+app.post('/tracker/reputation/votereputation', keyverification, voteReputation);
 
 
 
