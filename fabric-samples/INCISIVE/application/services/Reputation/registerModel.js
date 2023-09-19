@@ -12,7 +12,7 @@ const {ccps, msps, caClients, cas} = require('../../helpers/initalization');
 const  registerModel = async (req, res, next) => {
 
 	let user = req.body.user; // may not be needed if admin is the one executing it
-	let modelID = req.body.modelID;
+	let serviceID = req.body.serviceID;
 
 
 	try {
@@ -41,8 +41,8 @@ const  registerModel = async (req, res, next) => {
         // Get the contract from the network.
         const contract = network.getContract(chaincodeName);
 
-		console.log('\n--> Submit Transaction: RegisterModel, function registers the XAi model on the ledger');
-        let model = await contract.submitTransaction('RegisterModel', modelID);
+		console.log('\n--> Submit Transaction: RegisterModel, function registers the AI service on the ledger');
+        let model = await contract.submitTransaction('RegisterModel', serviceID);
 		console.log('*** Result: committed')
 
 		// Disconnect from the gateway when the application is closing
@@ -61,9 +61,9 @@ const  registerModel = async (req, res, next) => {
 
 	catch(error){
 
-		console.log('Registering an XAI model failed with error:'+error);
+		console.log('Registering an AI service failed with error:'+error);
 
-        res.status(500).send({"Error": "Registrering an XAI model failed with: "+error.message});
+        res.status(500).send({"Error": "Registrering an AI service failed with: "+error});
 
 	}
 }

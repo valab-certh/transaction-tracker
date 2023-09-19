@@ -5,6 +5,7 @@
 // Deterministic JSON.stringify()
 const stringify  = require('json-stringify-deterministic');
 const { Contract } = require('fabric-contract-api');
+const shim = require("fabric-shim");
 
 const weights = {
     "q1": 0.25,
@@ -43,7 +44,7 @@ class ReputationContract extends Contract {
 
         else {
 
-            throw new Error (`AI Model ${model_id} already exists`)
+            throw new Error (`AI Service ${model_id} already exists`)
         }
 
         return JSON.stringify(aiModel);
@@ -65,8 +66,23 @@ class ReputationContract extends Contract {
 
         let newSum = 0;
 
+        const voteKeys = Object.keys(vote).sort();
+        const weightKeys = Object.keys(weights).sort();
+
+        // Compare the sorted arrays of keys
+        if ( JSON.stringify(voteKeys) !== JSON.stringify(weightKeys)){
+
+            throw new Error("Inconsistent keys...");
+        }
+
+
 
         Object.keys(vote).forEach(key => {
+
+            if (vote[key] <= 0 || vote[key] > 5){
+
+                throw new Error("Please vote in a 1-5 scale...")
+            }
 
             newSum += vote[key]*weights[key];
         });
@@ -84,6 +100,9 @@ class ReputationContract extends Contract {
         }
 
         await ctx.stub.putState(model_id, Buffer.from(stringify((currentModel))))
+
+
+
 
         return JSON.stringify(currentModel);
 
@@ -103,7 +122,7 @@ class ReputationContract extends Contract {
         const model = await ctx.stub.getState(model_id);
         if ( !model || model.length ==0 ){
 
-            throw new Error (`The AI Model ${model_id} does not exist.`);
+            throw new Error (`The AI service ${model_id} does not exist.`);
         }
 
         // model = JSON.parse(model);

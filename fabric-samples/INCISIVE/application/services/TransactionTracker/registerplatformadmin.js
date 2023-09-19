@@ -28,7 +28,7 @@ const registerplatformadmin = async ()=> {
 
 		if (useridentity) {
 
-			msg = `An identity for the user ${INCISIVEadminId} already exists in the wallet`;
+			let msg = `An identity for the user ${INCISIVEadminId} already exists in the wallet`;
 			console.log(msg);
 			return ;
 		}

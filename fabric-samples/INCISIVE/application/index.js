@@ -107,13 +107,13 @@ app.get('/tracker/getdatainfo',  keyverification,getDataInfo);
 app.get('/tracker/getalldataorg', keyverification, getAllDataOrg);
 
 
-// XAI MODEL REPUTATION
+// XAI MODEL REPUTATION keyverification,
 
-app.post('/tracker/reputation/registermodel', keyverification, registerModel);
+app.post('/tracker/reputation/registerservice', registerModel);
 
-app.get('/tracker/reputation/getmodelinfo', keyverification, getModelInfo);
+app.get('/tracker/reputation/getserviceinfo',  getModelInfo);
 
-app.post('/tracker/reputation/votereputation', keyverification, voteReputation);
+app.post('/tracker/reputation/votereputation', voteReputation);
 
 
 

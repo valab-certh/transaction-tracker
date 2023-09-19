@@ -11,7 +11,7 @@ const {ccps, msps, caClients, cas} = require('../../helpers/initalization');
 const voteReputation = async (req,res) => {
 
     let user = req.body.user;
-    let modelID = req.body.modelID;
+    let serviceID = req.body.serviceID;
     let vote = req.body.vote;
 
     try{
@@ -48,7 +48,7 @@ const voteReputation = async (req,res) => {
         const contract = network.getContract(chaincodeName);
 
         console.log('\n--> Submit Transaction: VoteReputation, function records and computes reputation for an XAI model in the ledger');
-        let model = await contract.submitTransaction('VoteReputation', modelID, JSON.stringify(vote));
+        let model = await contract.submitTransaction('VoteReputation', serviceID, JSON.stringify(vote));
 		console.log('*** Result: committed')
 
         // Disconnect from the gateway when the application is closing
@@ -64,9 +64,9 @@ const voteReputation = async (req,res) => {
 
     catch(error){
 
-        console.log("Voting for model's reputation failed with error: "+error);
+        console.log("Voting for AI service's reputation failed with error: "+error);
 
-        res.status(500).send({"Error":"Voting for model's reputation failed with: "+error});
+        res.status(500).send({"Error":"Voting for AI service's reputation failed with: "+error});
     }
 }
 

@@ -12,9 +12,9 @@ const {ccps, msps, caClients, cas} = require('../../helpers/initalization');
 const getModelInfo = async (req, res) => {
 
     let user = req.body.user;
-    let modelID = req.body.modelID;
+    let serviceID = req.body.serviceID;
     // let user = "admin@incisive-project.eu";
-    // let modelID = "model 10";
+    // let serviceID = "model 10";
     try{
 
         let ccp = ccps['incisive'];
@@ -40,7 +40,7 @@ const getModelInfo = async (req, res) => {
         const contract = network.getContract(chaincodeName);
 
         console.log('\n--> Evaluate Transaction: GetModelModel, function retrieves information for an XAI model from the ledger');
-        let model = await contract.evaluateTransaction('GetModel', modelID);
+        let model = await contract.evaluateTransaction('GetModel', serviceID);
 		console.log('*** Result: committed')
 
         // Disconnect from the gateway when the application is closing
@@ -58,9 +58,9 @@ const getModelInfo = async (req, res) => {
 
     catch(error){
 
-        console.log("Getting information about an XAI model failed with error: "+error);
+        console.log("Getting information about an AI service failed with error: "+error);
 
-        res.status(500).send({"Error": "Getting information about an XAI model failed with error: "+error});
+        res.status(500).send({"Error": "Getting information about an AI service failed with error: "+error});
     }
 }
 
