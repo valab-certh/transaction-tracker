@@ -109,11 +109,11 @@ app.get('/tracker/getalldataorg', keyverification, getAllDataOrg);
 
 // XAI MODEL REPUTATION keyverification,
 
-app.post('/tracker/reputation/registerservice', registerModel);
+app.post('/tracker/reputation/registerservice', keyverification, registerModel);
 
-app.get('/tracker/reputation/getserviceinfo',  getModelInfo);
+app.get('/tracker/reputation/getserviceinfo',  keyverification, getModelInfo);
 
-app.post('/tracker/reputation/votereputation', voteReputation);
+app.post('/tracker/reputation/votereputation', keyverification, voteReputation);
 
 
 
