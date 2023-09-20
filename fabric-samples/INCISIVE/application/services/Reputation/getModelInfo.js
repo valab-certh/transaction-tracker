@@ -39,7 +39,7 @@ const getModelInfo = async (req, res) => {
         // Get the contract from the network.
         const contract = network.getContract(chaincodeName);
 
-        console.log('\n--> Evaluate Transaction: GetModelModel, function retrieves information for an XAI model from the ledger');
+        console.log('\n--> Evaluate Transaction: GetModelModel, function retrieves information for an AI service from the ledger');
         let model = await contract.evaluateTransaction('GetModel', serviceID);
 		console.log('*** Result: committed')
 
@@ -50,9 +50,9 @@ const getModelInfo = async (req, res) => {
         let modelJSON = JSON.parse(model);
         
 
-        console.log("Model info: ", modelJSON);
+        console.log("AI service info: ", modelJSON);
 
-        res.status(200).send({"Model": modelJSON});
+        res.status(200).send({"AI service": modelJSON});
 
     }
 

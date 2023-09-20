@@ -47,7 +47,7 @@ const voteReputation = async (req,res) => {
         // Get the contract from the network.
         const contract = network.getContract(chaincodeName);
 
-        console.log('\n--> Submit Transaction: VoteReputation, function records and computes reputation for an XAI model in the ledger');
+        console.log('\n--> Submit Transaction: VoteReputation, function records and computes reputation for an AI service in the ledger');
         let model = await contract.submitTransaction('VoteReputation', serviceID, JSON.stringify(vote));
 		console.log('*** Result: committed')
 
@@ -56,9 +56,9 @@ const voteReputation = async (req,res) => {
         gateway.disconnect();
 
 		let modelJSON = JSON.parse(model);
-        console.log("Updated Model:", modelJSON)
+        console.log("Updated AI Service:", modelJSON)
 
-        res.status(200).send({"Model": modelJSON});
+        res.status(200).send({"Service": modelJSON});
 
     }
 

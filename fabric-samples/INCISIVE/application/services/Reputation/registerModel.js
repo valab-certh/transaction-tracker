@@ -51,9 +51,9 @@ const  registerModel = async (req, res, next) => {
 
 		let modelJSON = JSON.parse(model);
 
-		console.log("Registered Model: ", modelJSON)
+		console.log("Registered AI Service: ", modelJSON)
 
-		res.status(200).send({"Model": modelJSON});
+		res.status(200).send({"Service": modelJSON});
     
 
 	}
