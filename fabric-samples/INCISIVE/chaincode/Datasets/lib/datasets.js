@@ -166,7 +166,7 @@ class DatasetsContract extends Contract {
 
         let role = ctx.clientIdentity.getAttributeValue('role');
 
-        if (!(role == "MEDICAL_PERSONNEL" || role == "ORGANIZATION_ADMINISTRATOR")){
+        if (!(role.includes("MEDICAL_PERSONNEL")  || role.includes("ORGANIZATION_ADMINISTRATOR"))){
 
             throw new Error("You are not allowed to check information about data used.");
         }
@@ -186,7 +186,7 @@ class DatasetsContract extends Contract {
 
         let role = ctx.clientIdentity.getAttributeValue('role');
 
-        if (!(role == "MEDICAL_PERSONNEL" || role == "ORGANIZATION_ADMINISTRATOR")){
+        if (!(role.includes("MEDICAL_PERSONNEL")  || role.includes("ORGANIZATION_ADMINISTRATOR"))){
 
             throw new Error("You are not allowed to check information about data used.");
         }

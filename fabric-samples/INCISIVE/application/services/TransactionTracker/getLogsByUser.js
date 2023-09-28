@@ -78,12 +78,12 @@ const getLogsByUser = async(req, res, next) => {
        let userInfoJSON = JSON.parse(userInfo);
        console.log ("JSON is", userInfoJSON)
 
-        if (userInfoJSON.Role == "ADMINISTRATOR") {
+        if (userInfoJSON.Role.includes("ADMINISTRATOR") && !(userInfoJSON.Role.includes("ORGANIZATION_ADMINISTRATOR"))) {
 
             logs = await retrieveByUser(identity, fromDate, toDate, pageLength, currentPage);
         }
 
-        else if (userInfoJSON.Role == "ORGANIZATION_ADMINISTRATOR"){
+        else if (userInfoJSON.Role.includes("ORGANIZATION_ADMINISTRATOR")){
 
             logs = await retrieveByUserOrg(identity, userInfoJSON.Organization, fromDate, toDate, pageLength, currentPage);
         }

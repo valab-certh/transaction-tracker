@@ -180,7 +180,7 @@ class UserContract extends Contract {
 
         let role = ctx.clientIdentity.getAttributeValue('role');
 
-        if (role != role_to_check){
+        if (!(role.icludes(role_to_check))){
 
             throw new Error("You don't have the necessary rights to perform this action");
         }
@@ -195,24 +195,33 @@ class UserContract extends Contract {
         let org = ctx.clientIdentity.getAttributeValue('org');
         let infoJSON = {}
 
-        if (role == "ADMINISTRATOR"){
+        // if (role == "ADMINISTRATOR"){
 
-            infoJSON = {
+        //     infoJSON = {
+
+        //         Role: role,
+        //         Organization: org
+        //     }
+
+        // }
+
+        // else if (role == "ORGANIZATION_ADMINISTRATOR"){
+
+        //     infoJSON = {
+
+        //         Role: role,
+        //         Organization: org
+        //     }
+
+        // }
+
+        if (role.includes("ADMINISTRATOR") || role.includes("ORGANIZATION_ADMINISTRATOR")){
+
+                infoJSON = {
 
                 Role: role,
                 Organization: org
             }
-
-        }
-
-        else if (role == "ORGANIZATION_ADMINISTRATOR"){
-
-            infoJSON = {
-
-                Role: role,
-                Organization: org
-            }
-
         }
 
         else {
@@ -248,12 +257,12 @@ class UserContract extends Contract {
         let role = ctx.clientIdentity.getAttributeValue('role');
         let regstrOrg = ctx.clientIdentity.getAttributeValue('org');
 
-        if (!(role == "ADMINISTRATOR" || role == "ORGANIZATION_ADMINISTRATOR")){
+        if (!(role.includes("ADMINISTRATOR") || role.includes("ORGANIZATION_ADMINISTRATOR"))){
 
             throw new Error("You are not allowed to register users.");
         }
 
-        if ((role == "ORGANIZATION_ADMINISTRATOR" && regstrOrg != org)){
+        if ((role.includes("ORGANIZATION_ADMINISTRATOR") && regstrOrg != org)){
 
             throw new Error("You are not allowed to register users outside your organization.");
         }

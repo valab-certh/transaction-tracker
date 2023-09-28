@@ -106,7 +106,7 @@ const getLogsByData = async(req, res, next) => {
         else {
         // else if ((data_id == "all" || data_id == "All" || data_id == "ALL")){
 
-            console.log('\n--> Evaluate Transaction: GetDataset, function retieves info about a specific dataset');
+            console.log('\n--> Evaluate Transaction: GetDatasetOrg, function retieves info about a specific dataset');
             let result = await contract.evaluateTransaction('GetDatasetOrg');
             console.log('*** Result: committed');
             console.log(result)
