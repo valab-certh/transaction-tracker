@@ -32,6 +32,7 @@ const getAllDataOrg = require('./services/TransactionTracker/getAllDataOrg');
 const getLogsByUser = require('./services/TransactionTracker/getLogsByUser');
 const getLogsByUserOrg = require('./services/TransactionTracker/getLogsByUserOrg');
 const getLogsByData = require('./services/TransactionTracker/getLogsByData');
+const getLogByHash = require('./services/TransactionTracker/getLogByHash');
 
 const registerModel = require('./services/Reputation/registerModel');
 const getModelInfo = require('./services/Reputation/getModelInfo');
@@ -88,7 +89,7 @@ app.post('/tracker/qualitycheck', keyverification, qualitycheck);
 app.post('/tracker/viewdata', keyverification, viewData)
 
 // app.post('/tracker/aiservice', keyverification, AIservice); // to be integrated
-app.post('/tracker/aiservice',keyverification, AIservice); // to be integrated
+app.post('/tracker/aiservice',  keyverification, AIservice); // to be integrated
 
 app.post('/tracker/trainmodel', keyverification, trainmodel); // to be integrated
 
@@ -100,7 +101,9 @@ app.get('/tracker/getlogsbyuser',  keyverification, getLogsByUser);
 
 // app.get('/tracker/getlogsbyuserorg', keyverification, getLogsByUserOrg);
 
-app.get('/tracker/getlogsbydata',  keyverification, getLogsByData);
+app.get('/tracker/getlogsbydata', keyverification, getLogsByData);
+
+app.get('/tracker/getlogbyhash', keyverification, getLogByHash);
 
 app.get('/tracker/getdatainfo',  keyverification,getDataInfo);
 
