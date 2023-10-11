@@ -180,12 +180,13 @@ class UserContract extends Contract {
 
         let role = ctx.clientIdentity.getAttributeValue('role');
 
-        if (!(role.icludes(role_to_check))){
+        if (!(role.includes(role_to_check))){
 
             throw new Error("You don't have the necessary rights to perform this action");
         }
 
     }
+    
 
 
     // GetRole Org is used to retrive the role and organization attribute of the user

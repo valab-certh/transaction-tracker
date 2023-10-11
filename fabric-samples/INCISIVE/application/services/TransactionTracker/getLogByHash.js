@@ -3,7 +3,7 @@ const path = require('path');
 
 
 const channelName = process.env.CHANNEL_NAME;
-const chaincodeName = process.env.DATASETS_CC_NAME;
+const chaincodeName = process.env.CC_NAME;
 const walletPath = path.join(__dirname, '..', '..', 'wallet');
 
 // const makeccp = require('../helpers/makeccp');
@@ -16,7 +16,7 @@ const getLogByHash = async(req, res, next) => {
 
     const requestor = req.body.user;
     let hash = req.body.hash;
-    const data_id = req.body.data_id;
+    // const data_id = req.body.data_id;
 
 
     try {
@@ -41,27 +41,27 @@ const getLogByHash = async(req, res, next) => {
 
         }
 
-        const gateway = new Gateway();
+        // const gateway = new Gateway();
 
 
-        console.log("Trying to connect to gateway...")
-        await gateway.connect(ccp, {
-            wallet,
-            identity: requestoridentity,
-            discovery: { enabled: true, asLocalhost: true } // using asLocalhost as this gateway is using a fabric network deployed locally
-        });
-        console.log("Connected!!!")
+    //     console.log("Trying to connect to gateway...")
+    //     await gateway.connect(ccp, {
+    //         wallet,
+    //         identity: requestoridentity,
+    //         discovery: { enabled: true, asLocalhost: true } // using asLocalhost as this gateway is using a fabric network deployed locally
+    //     });
+    //     console.log("Connected!!!")
 
-        // Build a network instance based on the channel where the smart contract is deployed
-        const network = await gateway.getNetwork(channelName);
+    //     // Build a network instance based on the channel where the smart contract is deployed
+    //     const network = await gateway.getNetwork(channelName);
 
-       // Get the contract from the network.
-       const contract = network.getContract(chaincodeName);
+    //    // Get the contract from the network.
+    //    const contract = network.getContract(chaincodeName);
 
-       let result  = await contract.evaluateTransaction('CheckDataPermissions', data_id);
-        console.log(JSON.parse(result))
+    //    let result  = await contract.evaluateTransaction('CheckRole', data_id);
+    //     console.log(JSON.parse(result))
 
-       gateway.disconnect();
+    //    gateway.disconnect();
 
         let log = await retrieveByHash(hash);
 
@@ -71,12 +71,6 @@ const getLogByHash = async(req, res, next) => {
 
 
         res.status(200).send(logJSON)
-
-
-
-        
-       
-
 
     }
 
