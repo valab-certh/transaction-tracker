@@ -6,7 +6,7 @@ const fs = require('fs');
 
 const {ccps, msps, caClients, cas} = require('../../helpers/initalization');
 const { revoke } = require('../../App Utils/CAUtil');
-const insertlog = require('../../MongoDB/controllers/insertlog');
+const insertlog = require('../../MongoDB/controllers/logs/insertlog');
 
 
 const walletPath = path.join(__dirname, '..', '..', 'wallet');

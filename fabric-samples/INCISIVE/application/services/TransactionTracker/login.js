@@ -1,7 +1,7 @@
 const { Gateway, Wallets} = require('fabric-network');
 const path = require('path');
 const fs = require('fs');
-const insertlog = require('../../MongoDB/controllers/insertlog');
+const insertlog = require('../../MongoDB/controllers/logs/insertlog');
 
 const channelName = process.env.CHANNEL_NAME;
 const chaincodeName = process.env.CC_NAME;

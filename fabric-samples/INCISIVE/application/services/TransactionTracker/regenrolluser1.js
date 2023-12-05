@@ -4,7 +4,7 @@ const { Gateway, Wallets } = require('fabric-network');
 
 const path = require('path');
 const { registerAndEnrollUser } = require('../../App Utils/CAUtil.js');
-const insertlog = require('../../MongoDB/controllers/insertlog');
+const insertlog = require('../../MongoDB/controllers/logs/insertlog.js');
 
 const {ccps, msps, caClients, cas} = require('../../helpers/initalization');
 

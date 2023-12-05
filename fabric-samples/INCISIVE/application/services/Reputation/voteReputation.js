@@ -7,6 +7,8 @@ const chaincodeName = process.env.REPUTATION_CC_NAME;
 const walletPath = path.join(__dirname,'..', '..', 'wallet');
 
 const {ccps, msps, caClients, cas} = require('../../helpers/initalization');
+const saveNewComment = require('../../MongoDB/controllers/repComments/insertComments')
+const deleteComment = require('../../MongoDB/controllers/repComments/deleteComment');
 
 const voteReputation = async (req,res) => {
 
@@ -16,12 +18,11 @@ const voteReputation = async (req,res) => {
 
     try{
 
-        // if (vote < 1 || vote > 5 ||(!Number.isInteger(vote))){
+        if (vote.hasOwnProperty('q7') && vote['q7']!==null && (vote['q7'].length!==0 && vote['q7'].trim().length !== 0 )){
+            var savedComment = await saveNewComment(serviceID, vote['q7']);
+            console.log('I saved the comment!!!', savedComment)
+        }
 
-        //     let error = new Error("Insert a vote between 1 and 5.");
-
-        //     throw error;
-        // }
 
         let ccp = ccps['incisive'];
 
@@ -64,6 +65,13 @@ const voteReputation = async (req,res) => {
 
     catch(error){
 
+        try{
+            await deleteComment(savedComment);
+        }
+        catch(error){
+            console.log("Voting for AI service's reputation failed with error: "+error);
+        }
+        
         console.log("Voting for AI service's reputation failed with error: "+error);
 
         res.status(500).send({"Error":"Voting for AI service's reputation failed with: "+error});

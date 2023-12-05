@@ -3,7 +3,7 @@ const path = require('path');
 const fs = require('fs');
 
 const {ccps, msps, caClients, cas} = require('../../helpers/initalization');
-const insertlog = require('../../MongoDB/controllers/insertlog');
+const insertlog = require('../../MongoDB/controllers/logs/insertlog');
 
 const channelName = process.env.CHANNEL_NAME;
 const chaincodeName = process.env.CC_NAME;

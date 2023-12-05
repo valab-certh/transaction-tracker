@@ -8,7 +8,7 @@ const secret = process.env.HASH_SECRET;
 const walletPath = path.join(__dirname, '..', '..', 'wallet');
 
 const {ccps, msps, caClients, cas} = require('../../helpers/initalization');
-const insertlog = require('../../MongoDB/controllers/insertlog');
+const insertlog = require('../../MongoDB/controllers/logs/insertlog');
 
 
 function prettyJSONString(inputString) {

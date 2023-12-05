@@ -112,7 +112,7 @@ app.get('/tracker/getalldataorg', keyverification, getAllDataOrg);
 
 // XAI MODEL REPUTATION keyverification,
 
-app.post('/tracker/reputation/registerservice', keyverification, registerModel);
+app.post('/tracker/reputation/registerservice',  keyverification, registerModel);
 
 app.get('/tracker/reputation/getserviceinfo',  keyverification, getModelInfo);
 

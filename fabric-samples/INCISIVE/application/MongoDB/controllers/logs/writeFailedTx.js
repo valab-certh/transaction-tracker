@@ -13,7 +13,7 @@ console.log(typeof secret);
 const walletPath = path.join(__dirname,'..', '..', 'wallet');
 
 
-const {ccps, msps, caClients, cas} = require('../../helpers/initalization');
+const {ccps, msps, caClients, cas} = require('../../../helpers/initalization');
 function prettyJSONString(inputString) {
 	return JSON.stringify(JSON.parse(inputString), null, 2);
 }

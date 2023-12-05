@@ -4,5 +4,6 @@
   "q3": "How useful are the results of  the AI service, in the context of your work?",
   "q4": "Does the result of this AI service contribute positively to your trust in the AI model's predictions?",
   "q5": "Would you consider positively integrating the use of this AI service in your standard workflow in the near future? ",
-  "q6": "How would you rate your overall satisfaction with this AI service?"
+  "q6": "How would you rate your overall satisfaction with this AI service?",
+  "q7": "Additional Comments"
 }

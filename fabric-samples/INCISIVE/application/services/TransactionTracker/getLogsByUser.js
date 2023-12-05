@@ -8,8 +8,8 @@ const walletPath = path.join(__dirname, '..', '..', 'wallet');
 
 // const makeccp = require('../helpers/makeccp');
 const {ccps, msps, caClients, cas} = require('../../helpers/initalization');
-const retrieveByUser= require('../../MongoDB/controllers/retrieveByUser');
-const retrieveByUserOrg = require('../../MongoDB/controllers/retrieveByUserOrg');
+const retrieveByUser= require('../../MongoDB/controllers/logs/retrieveByUser');
+const retrieveByUserOrg = require('../../MongoDB/controllers/logs/retrieveByUserOrg');
 
 
 // TODO: check if user is admin (probably), and see about the middleware

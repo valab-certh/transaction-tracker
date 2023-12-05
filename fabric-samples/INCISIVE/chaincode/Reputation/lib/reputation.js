@@ -58,6 +58,10 @@ class ReputationContract extends Contract {
 
         vote = JSON.parse(vote);
 
+        if (vote.hasOwnProperty("q7")) {
+            delete vote['q7'];
+        }
+
         let oldVoters = currentModel.TotalVotes;
 
         // let oldReputation = currentModel.ReputationScore
@@ -100,9 +104,6 @@ class ReputationContract extends Contract {
         }
 
         await ctx.stub.putState(model_id, Buffer.from(stringify((currentModel))))
-
-
-
 
         return JSON.stringify(currentModel);
 

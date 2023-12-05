@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const Log = require('../log.model');
+const Log = require('../../models/log.model');
 const writeFailedTx = require('./writeFailedTx');
 
 

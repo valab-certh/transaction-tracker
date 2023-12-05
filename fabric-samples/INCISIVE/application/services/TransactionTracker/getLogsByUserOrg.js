@@ -8,7 +8,7 @@ const walletPath = path.join(__dirname, '..', '..', 'wallet');
 
 // const makeccp = require('../helpers/makeccp');
 const {ccps, msps, caClients, cas} = require('../../helpers/initalization');
-const retrieveByUserOrg = require('../../MongoDB/controllers/retrieveByUserOrg');
+const retrieveByUserOrg = require('../../MongoDB/controllers/logs/retrieveByUserOrg');
 
 function prettyJSONString(inputString) {
 	return JSON.stringify(JSON.parse(inputString), null, 2);
