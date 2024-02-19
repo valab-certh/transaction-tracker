@@ -87,6 +87,7 @@ ca:
   certfile:
   # Chain file
   chainfile:
+  reenrollIgnoreCertExpiry: true
 
 #############################################################################
 #  The gencrl REST endpoint is used to generate a CRL that contains revoked
@@ -263,13 +264,13 @@ signing:
     default:
       usage:
         - digital signature
-      expiry: 8760h
+      expiry: 131500h
     profiles:
       ca:
          usage:
            - cert sign
            - crl sign
-         expiry: 43800h
+         expiry: 131500h
          caconstraint:
            isca: true
            maxpathlen: 0
@@ -280,7 +281,7 @@ signing:
             - server auth
             - client auth
             - key agreement
-         expiry: 8760h
+         expiry: 131500h #8760h
 
 ###########################################################################
 #  Certificate Signing Request (CSR) section.

@@ -229,9 +229,9 @@ function createOrgs() {
 function networkUp() {
   checkPrereqs
   # generate artifacts if they don't exist
-  if [ ! -d "organizations/peerOrganizations" ]; then
+  # if [ ! -d "organizations/peerOrganizations" ]; then
     createOrgs
-  fi
+  # fi
 
   COMPOSE_FILES="-f ${COMPOSE_FILE_BASE}"
 
@@ -270,6 +270,16 @@ function deployCC() {
   if [ $? -ne 0 ]; then
     fatalln "Deploying chaincode failed"
   fi
+}
+
+function renew(){
+
+  . renewal.sh
+
+
+    infoln "ReCreating Orderer Org Identities"
+
+    createOrderer
 }
 
 
@@ -455,6 +465,8 @@ elif [ "$MODE" == "restart" ]; then
   infoln "Restarting network"
 elif [ "$MODE" == "deployCC" ]; then
   infoln "deploying chaincode on channel '${CHANNEL_NAME}'"
+elif [ "$MODE" == "renewal" ]; then
+  infoln "renew certificates"
 else
   printHelp
   exit 1
@@ -468,6 +480,8 @@ elif [ "${MODE}" == "deployCC" ]; then
   deployCC
 elif [ "${MODE}" == "down" ]; then
   networkDown
+elif [ "${MODE}" == "renewal" ]; then
+  renew
 else
   printHelp
   exit 1
