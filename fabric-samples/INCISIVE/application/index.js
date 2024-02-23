@@ -38,6 +38,10 @@ const registerModel = require('./services/Reputation/registerModel');
 const getModelInfo = require('./services/Reputation/getModelInfo');
 const voteReputation = require('./services/Reputation/voteReputation');
 
+// RESTORATION SERVICES
+const reUpload = require('./services/Restore/reUploadData');
+const reRegister = require('./services/Restore/reRegisterUsers');
+const reRegisterModel = require('./services/Restore/reRegisterModel');
 
 const {keyverification} = require('./services/verifykey/keyverification');
 
@@ -101,24 +105,29 @@ app.get('/tracker/getlogsbyuser',  keyverification, getLogsByUser);
 
 // app.get('/tracker/getlogsbyuserorg', keyverification, getLogsByUserOrg);
 
-app.get('/tracker/getlogsbydata', keyverification, getLogsByData);
+app.get('/tracker/getlogsbydata',  keyverification, getLogsByData);
 
 app.get('/tracker/getlogbyhash', keyverification, getLogByHash);
 
-app.get('/tracker/getdatainfo',  keyverification,getDataInfo);
+app.get('/tracker/getdatainfo',  keyverification, getDataInfo);
 
-app.get('/tracker/getalldataorg', keyverification, getAllDataOrg);
+
 
 
 // XAI MODEL REPUTATION keyverification,
 
-app.post('/tracker/reputation/registerservice',  keyverification, registerModel);
+app.post('/tracker/reputation/registerservice',  keyverification, registerModel)
 
 app.get('/tracker/reputation/getserviceinfo',  keyverification, getModelInfo);
 
 app.post('/tracker/reputation/votereputation', keyverification, voteReputation);
 
 
+// RESTORATION SERVICES
+app.get('/tracker/getalldataorg',  getAllDataOrg);
+app.post ('/tracker/reupload', reUpload)
+app.post ('/tracker/reregister', reRegister)
+app.post ('/tracker/remodel', reRegisterModel)
 
 
 app.listen(domain.SERVER_PORT, () => {

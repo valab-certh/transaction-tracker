@@ -1,9 +1,10 @@
 const { Gateway, Wallets} = require('fabric-network');
 const path = require('path');
+const fs = require('fs');
 
 
 const channelName = process.env.CHANNEL_NAME;
-const chaincodeName = process.env.CC_NAME;
+const chaincodeName = process.env.DATASETS_CC_NAME;
 const secret = process.env.HASH_SECRET;
 const walletPath = path.join(__dirname, '..', '..', 'wallet');
 
@@ -16,24 +17,37 @@ function prettyJSONString(inputString) {
 
 
 
-const uploaddata = async (req, res) => {
+const REuploaddata = async (req, res) => {
 
     //should be given by request or taken from a token (e.g. jwt)
     // const identity = req.body.user;
     // let identity = res.locals.org;
-    let identity = req.body.org;
-    console.log(identity);
-    let data = req.body.data;
+    // let identity = "admin@incisve-project.eu";
+    // console.log(identity);
+    // let data = req.body.data;
     console.log(req.body)
 
-
+    const filePath = path.join(__dirname, 'data.json');
+    let jsonData;
     try {
 
 
-        if (!(Array.isArray(data) && data.length)){
-
-            throw new Error("No data have been selected!");
-        }
+        fs.readFile(filePath, 'utf8', (err, data) => {
+            if (err) {
+              console.error('Error reading file:', err);
+              return;
+            }
+            
+            try {
+              // Parse the JSON data
+             jsonData = JSON.parse(data);
+              
+              // Now you can work with jsonData
+              console.log('Read JSON data:', jsonData);
+            } catch (parseError) {
+              console.error('Error parsing JSON data:', parseError);
+            }
+          });
 
 
         let ccp = ccps['incisive'];
@@ -62,28 +76,24 @@ const uploaddata = async (req, res) => {
         const network = await gateway.getNetwork(channelName);
 
         // Get the contract from the network.
-        const contract = network.getContract(chaincodeName, 'DataContract');
+        const contract = network.getContract(chaincodeName);
 
+        jsonData.forEach(async item => {
+          const record = item.Record;
+          console.log(record);
+          console.log('\n--> Submit Transaction: InitLedger, function creates the initial set of assets on the ledger');
+          let result= await contract.submitTransaction('ReStoreData', JSON.stringify(record));
+          console.log(`*** Result: ${prettyJSONString(result.toString())}` );
 
-        console.log('\n--> Submit Transaction: InitLedger, function creates the initial set of assets on the ledger');
-        let result= await contract.submitTransaction('UploadData', data, identity, secret);
+        });
 
-        console.log('*** Result: committed');
-        console.log(`*** Result: ${prettyJSONString(result.toString())}`);
 
 
         gateway.disconnect();
 
 
-        let resultjson = JSON.parse(result.toString());
+        // let resultjson = JSON.parse(result.toString());
 
-
-        //save log to mongodb
-        let action = resultjson[0];
-        console.log('action', action)
-        let hash = resultjson[1];
-        console.log('hash', hash)
-        await insertlog(hash, action);
 
         res.status(200).send("OK!");
 
@@ -100,4 +110,4 @@ const uploaddata = async (req, res) => {
  
 }
 
-module.exports = uploaddata;
+module.exports = REuploaddata;

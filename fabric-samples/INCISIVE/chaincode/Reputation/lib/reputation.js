@@ -50,6 +50,32 @@ class ReputationContract extends Contract {
         return JSON.stringify(aiModel);
     }
 
+    async ReRegisterModel(ctx, model_id, score, votes){
+
+        let aiModel = {};
+
+        let exists = await this.ModelExists(ctx, model_id);
+
+        if (!exists){
+
+            aiModel = {    //do we need to keep each score separately (for each question) ?
+
+                ID: model_id,
+                ReputationScore: score,
+                TotalVotes:votes
+            };
+    
+            await ctx.stub.putState(model_id, Buffer.from(stringify((aiModel))))
+        }
+
+        else {
+
+            throw new Error (`AI Service ${model_id} already exists`)
+        }
+
+        return JSON.stringify(aiModel);
+    }
+
 
     async VoteReputation(ctx, model_id, vote){
 
@@ -131,6 +157,26 @@ class ReputationContract extends Contract {
         return model.toString();
     }
 
+    async GetAllAssets(ctx) {
+        const allResults = [];
+        // range query with empty string for startKey and endKey does an open-ended query of all assets in the chaincode namespace.
+        const iterator = await ctx.stub.getStateByRange('', '');
+        let result = await iterator.next();
+        while (!result.done) {
+            const strValue = Buffer.from(result.value.value.toString()).toString('utf8');
+            let record;
+            try {
+                record = JSON.parse(strValue);
+            } 
+            catch (err) {
+                console.log(err);
+                record = strValue;
+            }
+            allResults.push({ Key: result.value.key, Record: record });
+            result = await iterator.next();
+        }
+        return allResults;
+    }
 
 }
 

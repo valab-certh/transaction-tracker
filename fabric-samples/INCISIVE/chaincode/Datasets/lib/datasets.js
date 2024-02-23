@@ -63,6 +63,24 @@ class DatasetsContract extends Contract {
     }
 
 
+
+
+    async ReStoreData(ctx,  data){
+
+        // let timestamp = ctx.stub.getDateTimestamp();
+
+        // Multiple patients or different data might be uploaded at once, that's why the following implementation
+
+            let dataJSON = JSON.parse(data);
+
+            await ctx.stub.putState(dataJSON.ID, Buffer.from(stringify((dataJSON))));
+            return JSON.stringify(dataJSON);
+
+    }
+  
+    
+
+
     // RemoveData is used when a data provider removes some of the data with data_id.
     // TODO: check if user is eligible to perform this action
     // TODO: Check if user will be able to remove multiple data at once

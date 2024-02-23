@@ -82,7 +82,7 @@ const getAllDataOrg = async(req, res, next) => {
             console.log('JSON data has been written to file');
           });
 
-
+        // console.log(datasetarray)
         res.status(200).send((datasetarray));
         
     }

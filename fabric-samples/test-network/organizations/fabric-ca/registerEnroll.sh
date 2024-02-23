@@ -193,11 +193,6 @@ function createOrderer() {
 
   export FABRIC_CA_CLIENT_HOME=${PWD}/organizations/ordererOrganizations/orderer.iti.gr
   
-  #NEW CODE FOR RENEWING THE CERTIFICATES 
-
-  # fabric-ca-client enroll -u https://admin:adminpw@localhost:9054 --csr tls-csr.pem > signed-tls-cert.pem
-
-  #NEW CODE FOR RENEWING THE CERTIFICATES 
   set -x
   fabric-ca-client enroll -u https://admin:adminpw@localhost:9054 --caname ca-orderer --tls.certfiles "${PWD}/organizations/fabric-ca/Orderer/tls-cert.pem"
   { set +x; } 2>/dev/null

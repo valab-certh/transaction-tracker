@@ -82,6 +82,7 @@ const getLogsByData = async(req, res, next) => {
             try{
             let result  = await contract.evaluateTransaction('CheckDataPermissions', data_id);
             console.log(JSON.parse(result))
+            console.log("HEYEYEYEYYEYE");
 
             }
             catch(err){
