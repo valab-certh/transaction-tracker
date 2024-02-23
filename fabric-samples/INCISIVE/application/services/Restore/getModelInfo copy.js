@@ -40,8 +40,8 @@ const getModelInfo = async (req, res) => {
         const contract = network.getContract(chaincodeName);
 
         console.log('\n--> Evaluate Transaction: GetModelModel, function retrieves information for an AI service from the ledger');
-        // let model = await contract.evaluateTransaction('GetModel', serviceID);
-        let model = await contract.evaluateTransaction('GetAllAssets');
+        let model = await contract.evaluateTransaction('GetModel', serviceID);
+        // let model = await contract.evaluateTransaction('GetAllAssets');
 		console.log('*** Result: committed')
 
         // Disconnect from the gateway when the application is closing
