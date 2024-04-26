@@ -1,0 +1,17 @@
+#
+# Ignore App related files
+#
+
+# Enviromental variables
+.env
+
+#ignore security keys
+
+/services/verifykey/keys.ini
+
+#Node modules
+node_modules
+
+#
+package-lock.json
+wallet

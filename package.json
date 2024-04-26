@@ -1,0 +1,26 @@
+{
+    "name": "transactiontracker",
+    "version": "1.0.0",
+    "description": "This application is used as tracking (logging) and auditing mechanism for a clinical platform platform, where users can share data, and execute AI pipelines to get results. This application wil run for a Fabric network with default configurations, and create entities for Org1.",
+    "main": "index.js",
+    "scripts": {
+      "start": "nodemon index.js",
+      "registerAdmin":"node registerplatformadmin.js"
+    },
+    "keywords": [
+      "HyperledgerFabric",
+      "fabric-sdk-node",
+      "Node.js",
+      "MongoDB"
+    ],
+    "author": "Zisis Sakellariou",
+    "license": "MIT License",
+    "dependencies": {
+      "fabric-network": "^2.2.12",
+      "mongodb": "^5.0.7",
+      "nodemon": "^2.0.14",
+      "node": "^17.7.2",
+      "npm": "8.1.0",
+      "express": "4.17.1"
+    }
+  }

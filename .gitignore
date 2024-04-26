@@ -1,0 +1,17 @@
+# Emacs backup files
+*~
+*#
+.#*
+# Vim file artifacts
+.*.sw*
+# installed platform-specific binaries
+/bin
+/config
+.DS_Store
+.project
+# Dependency directories
+node_modules/
+package-lock.json
+
+/application/wallet
+
