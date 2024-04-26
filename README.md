@@ -48,27 +48,27 @@ These variables are essential for the application to work. You should define a h
 
 #### Logging mechanism 
 
-*/tracker/register*: This service is responsible for registering users in the Fabric network, and records this action on the ledger and in MongoDB.
-*/tracker/login*: This service is responsible for recording the log ins of the user in the platform. It stores the action on the ledger and in MongoDB.
-*/tracker/logout*: This service is responsible for recording the log outs of the user in the platform. It stores the action on the ledger and in MongoDB.
-*/tracker/searchdata*: This service is responsible for recording the queries of users, when they search for data in the platform. It stores the action on the ledger and in MongoDB.
-*/tracker/returneddata*: This service is responsible for recording the results returned from the user queries for data. It stores the action on the ledger and in MongoDB.
-*/tracker/choosedata*: This service is responsible for recording the data that user selects and wants to use (from the pool of the returned results). It stores the action on the ledger and in MongoDB.
-*/tracker/uploaddata*: This service is responsible for recording the uploading of data in the platform. It stores the action on the ledger and in MongoDB. It also stores metadata about the uploaded data n the ledger.
-*/tracker/aiservice*: This service is responsible for recording the use of an AI service by the user. It stores the action on the ledger and in MongoDB.
-*/tracker/trainmodel*: This service is responsible for recording the training of an AI model by the user in the platform. It stores the action on the ledger and in MongoDB.
+* */tracker/register*: This service is responsible for registering users in the Fabric network, and records this action on the ledger and in MongoDB.
+* */tracker/login*: This service is responsible for recording the log ins of the user in the platform. It stores the action on the ledger and in MongoDB.
+* */tracker/logout*: This service is responsible for recording the log outs of the user in the platform. It stores the action on the ledger and in MongoDB.
+* */tracker/searchdata*: This service is responsible for recording the queries of users, when they search for data in the platform. It stores the action on the ledger and in MongoDB.
+* */tracker/returneddata*: This service is responsible for recording the results returned from the user queries for data. It stores the action on the ledger and in MongoDB.
+* */tracker/choosedata*: This service is responsible for recording the data that user selects and wants to use (from the pool of the returned results). It stores the action on the ledger and in MongoDB.
+* */tracker/uploaddata*: This service is responsible for recording the uploading of data in the platform. It stores the action on the ledger and in MongoDB. It also stores metadata about the uploaded data n the ledger.
+* */tracker/aiservice*: This service is responsible for recording the use of an AI service by the user. It stores the action on the ledger and in MongoDB.
+* */tracker/trainmodel*: This service is responsible for recording the training of an AI model by the user in the platform. It stores the action on the ledger and in MongoDB.
 
 #### Auditing mechanism
 
-*/tracker/getlogsbyuser*: This service is responsible for fetching all the recorded logs performed by a specific user.
-*/tracker/getlogsbydata*: This service is responsible for fetching all the recorded logs that were performed using a specific dataset from a data provider.
-*/tracker/getlogbyhash*: This service is a utility service, responsible for fetching a log based on its hash.
+* */tracker/getlogsbyuser*: This service is responsible for fetching all the recorded logs performed by a specific user.
+* */tracker/getlogsbydata*: This service is responsible for fetching all the recorded logs that were performed using a specific dataset from a data provider.
+* */tracker/getlogbyhash*: This service is a utility service, responsible for fetching a log based on its hash.
 
 #### AI services reputation
 
-*'/tracker/reputation/registerservice*: This service records a new AI service on the ledger.
-*'/tracker/reputation/getserviceinfo*: This service retrieves the information for an AI service, including its reputation, from the ledger.
-*'/tracker/reputation/votereputation*: This service receives as input the user's answers on the questions, calculates the reputation score for the AI service and then stores it on the ledger.
+* */tracker/reputation/registerservice*: This service records a new AI service on the ledger.
+* */tracker/reputation/getserviceinfo*: This service retrieves the information for an AI service, including its reputation, from the ledger.
+* */tracker/reputation/votereputation*: This service receives as input the user's answers on the questions, calculates the reputation score for the AI service and then stores it on the ledger.
 
 
 # License
